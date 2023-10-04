@@ -1,48 +1,35 @@
-# Project Proposal
+# Dungeon Master's Toolkit
+For my final capstone project I want to build a web app that can be used as a sort of useful toolkit for running a game. World Anvil and Campfire are helpful for managing the writing aspect of Dungeons and Dragons, but they don't help with the number crunching very much. This toolkit's primary purpose is to streamline and automate aspects of the game that can be tedious to do manually.
 
-Use this template to help get you started right away! Once the proposal is complete, please let your mentor know that this is ready to be reviewed.
+## Key Features
+The following are the primary tools I am considering making. Each would have a "Create" screen where the nessecary details can be entered and a "Run" screen where the virtual dice are rolled and the details specified by those dice are pulled from the API. Custom content can be made visible to other users for them to use in their games.
+- NPC Manager
+    - Keep stat block, story notes, and personality traits in one place
+- Stat Block Manager
+    - Can either be custom monsters or monsters pulled from the WikiDot API
+    - Stat block also comes with PNGs to be used on battlemaps
+    - Built in Challenge Rating Calculator can be used to adjust the CR depending on the party's player count and equipment.
+- Encounter Creator
+    - Save encouters for story beats or random encounters
+    - Can specify size and quantity of dice used to calculate monster numbers
+    - Running the encounter will roll the specified dice and pull up the specified monster's stat block.
+- Random Encounter Table Creator
+    - Can use either dice or percentages to set the odds of an enounter occurring
+    - Running a Random Encounter Table will pull up all the details of the encounter with one click of a button
+- Initiative Manager
+    - Tracks PC and Monster initiative order simply by keeping the list sorted
+    - Has important PC stats like AC and passives
+    - Tracks monster health and status effects
+    - Can be generated directly from an encounter
+    - Has quick references for status effects, horde rules, and other handy things that are on the DM screen
+- Weather Generator
+    - Specify the lattitude and time of year and a randomly generated percipitation, wind, and temperature will be calculated
+    - Custom weather tables could be made for more unusual biomes
+## Use Case 
+1. After loggin in, the user would be taken to a home screen where all the tools would be listed. Each tool would have a "Create" or "Use" link. The "Create" link would take the user to a form where a new stat block/encounter/etc. can be made. 
+2. The "Use" link would take the user to the list of the tools the user has access to. To begin with it would just be the default/example tools that come with the user generation. There would be an option to search community created content and add it to the user's list. 
+3. Clicking on any of the tools in the list will bring the user to the "Run" screen of the selected tool. Each tool would behave as specified in the previous section
+4. Tools on the user's list can be removed from the view and hidden from that user, but not any other user.
 
-## Get Started
-
-|             | Description                                                                                                                                                                                                                                                                                                                                              | Fill in |
-| ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| Tech Stack  | What tech stack will you use for your final project? We recommend that you use React and Node for this project, however if you are extremely interested in becoming a Python developer you are welcome to use Python/Flask for this project.                                                                                                             |         |
-| Stack Focus | Is the front-end UI or the back-end going to be the focus of your project? Or are you going to make an evenly focused full-stack application?                                                                                                                                                                                                            |         |
-| Type        | Will this be a website? A mobile app? Something else?                                                                                                                                                                                                                                                                                                    |         |
-| Goal        | What goal will your project be designed to achieve?                                                                                                                                                                                                                                                                                                      |         |
-| Users       | What kind of users will visit your app? In other words, what is the demographic of your users?                                                                                                                                                                                                                                                           |         |
-| Data        | What data do you plan on using? How are you planning on collecting your data? You may have not picked your actual API yet, which is fine, just outline what kind of data you would like it to contain. You are welcome to create your own API and populate it with data. If you are using a Python/Flask stack, you are required to create your own API. |         |
-
-# Breaking down your project
-
-When planning your project, break down your project into smaller tasks, knowing that you may not know everything in advance and that these details might change later. Some common tasks might include:
-
-- Determining the database schema
-- Sourcing your data
-- Determining user flow(s)
-- Setting up the backend and database
-- Setting up the frontend
-- What functionality will your app include?
-  - User login and sign up
-  - Uploading a user profile picture
-
-Here are a few examples to get you started with. During the proposal stage, you just need to create the tasks. Description and details can be edited at a later time. In addition, more tasks can be added in at a later time.
-
-| Task Name                   | Description                                                                                                   | Example                                                           |
-| --------------------------- | ------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
-| Design Database schema      | Determine the models and database schema required for your project.                                           | [Link](https://github.com/hatchways/sb-capstone-example/issues/1) |
-| Source Your Data            | Determine where your data will come from. You may choose to use an existing API or create your own.           | [Link](https://github.com/hatchways/sb-capstone-example/issues/2) |
-| User Flows                  | Determine user flow(s) - think about what you want a user’s experience to be like as they navigate your site. | [Link](https://github.com/hatchways/sb-capstone-example/issues/3) |
-| Set up backend and database | Configure the environmental variables on your framework of choice for development and set up database.        | [Link](https://github.com/hatchways/sb-capstone-example/issues/4) |
-| Set up frontend             | Set up frontend framework of choice and link it to the backend with a simple API call for example.            | [Link](https://github.com/hatchways/sb-capstone-example/issues/5) |
-| User Authentication         | Fullstack feature - ability to authenticate (login and sign up) as a user                                     | [Link](https://github.com/hatchways/sb-capstone-example/issues/6) |
-
-## Labeling
-
-Labeling is a great way to separate out your tasks and to track progress. Here’s an [example](https://github.com/hatchways/sb-capstone-example/issues) of a list of issues that have labels associated.
-
-| Label Type    | Description                                                                                                                                                                                                                                                                                                                     | Example                      |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
-| Difficulty    | Estimating the difficulty level will be helpful to determine if the project is unique and ready to be showcased as part of your portfolio - having a mix of task difficultlies will be essential.                                                                                                                               | Easy, Medium, Hard           |
-| Type          | If a frontend/backend task is large at scale (for example: more than 100 additional lines or changes), it might be a good idea to separate these tasks out into their own individual task. If a feature is smaller at scale (not more than 10 files changed), labeling it as fullstack would be suitable to review all at once. | Frontend, Backend, Fullstack |
-| Stretch Goals | You can also label certain tasks as stretch goals - as a nice to have, but not mandatory for completing this project.                                                                                                                                                                                                           | Must Have, Stretch Goal      |
+## Technology being used
+Think that a React frontend that accesses the data through a custom Express backend would be the best way to do this. WikiDot has a free API I can use for a lot of the default stat block details, and I can use the PNG API that I made in the Capstone 1 for that part of the stat block.
