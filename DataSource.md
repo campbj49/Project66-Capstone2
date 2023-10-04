@@ -1,5 +1,5 @@
 # Overview
-The API I will be using in this project is a custom API that will grant the frontend access to the server. 
+The API I will be using in this project is http://www.dnd5eapi.co/. It has all of the default stat blocks I need plus some other material from the rule books that I may use if I continue to expand the features of the project. A custom API will grant the frontend access to both the database and the main API. 
 ## Database Schema
 - User
     - username: primary key used for user identification
