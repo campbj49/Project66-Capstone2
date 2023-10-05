@@ -1,47 +1,43 @@
-"use strict";
+/** Express app for bookstore. */
 
-/** Express app for jobly. */
 
 const express = require("express");
-const cors = require("cors");
-
-const { NotFoundError } = require("./expressError");
-
-const { authenticateJWT } = require("./middleware/auth");
-const authRoutes = require("./routes/auth");
-const companiesRoutes = require("./routes/companies");
-const usersRoutes = require("./routes/users");
-const jobsRoutes = require("./routes/jobs");
-
-const morgan = require("morgan");
-
 const app = express();
 
-app.use(cors());
 app.use(express.json());
-app.use(morgan("tiny"));
-app.use(authenticateJWT);
 
-app.use("/auth", authRoutes);
-app.use("/companies", companiesRoutes);
-app.use("/users", usersRoutes);
-app.use("/jobs", jobsRoutes);
+const ExpressError = require("./expressError")
+const bookRoutes = require("./routes/books");
 
+app.use("/books", bookRoutes);
 
-/** Handle 404 errors -- this matches everything */
-app.use(function (req, res, next) {
-  return next(new NotFoundError());
+app.get("/", async function (req, res, next) {
+  try {
+    //const books = await Book.findAll(req.query);
+    return res.json("{ books }");
+  } catch (err) {
+    return next(err);
+  }
 });
 
-/** Generic error handler; anything unhandled goes here. */
-app.use(function (err, req, res, next) {
-  if (process.env.NODE_ENV !== "test") console.error(err.stack);
-  const status = err.status || 500;
-  const message = err.message;
+/** 404 handler */
 
-  return res.status(status).json({
-    error: { message, status },
+app.use(function (req, res, next) {
+  const err = new ExpressError("Not Found", 404);
+  return next(err);
+});
+
+
+/** general error handler */
+
+app.use(function(err, req, res, next) {
+  res.status(err.status || 500);
+
+  return res.json({
+    error: err,
+    message: err.message
   });
 });
+
 
 module.exports = app;

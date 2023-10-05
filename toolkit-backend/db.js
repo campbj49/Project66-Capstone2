@@ -1,23 +1,14 @@
-"use strict";
-/** Database setup for jobly. */
+/** Database config for database. */
+
+
 const { Client } = require("pg");
-const { getDatabaseUri } = require("./config");
+const {DB_URI} = require("./config");
 
-let db;
-
-if (process.env.NODE_ENV === "production") {
-  db = new Client({
-    connectionString: getDatabaseUri(),
-    ssl: {
-      rejectUnauthorized: false
-    }
-  });
-} else {
-  db = new Client({
-    connectionString: getDatabaseUri()
-  });
-}
+let db = new Client({
+  connectionString: DB_URI
+});
 
 db.connect();
+
 
 module.exports = db;
