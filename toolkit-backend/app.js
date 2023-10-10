@@ -8,8 +8,12 @@ app.use(express.json());
 
 const ExpressError = require("./expressError")
 const bookRoutes = require("./routes/books");
+const authRoutes = require("./routes/auth");
+const usersRoutes = require("./routes/users");
 
 app.use("/books", bookRoutes);
+app.use("/auth", authRoutes);
+app.use("/users", usersRoutes);
 
 app.get("/", async function (req, res, next) {
   try {
