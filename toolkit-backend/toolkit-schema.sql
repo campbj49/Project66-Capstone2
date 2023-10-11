@@ -13,21 +13,22 @@ CREATE TABLE users (
   is_admin BOOLEAN
 );
 
-CREATE TABLE initiative_entity(
+CREATE TABLE initiative_entities(
   id SERIAL PRIMARY KEY,
   name TEXT NOT NULL,
-  description TEXT NOT NULL
+  description TEXT NOT NULL,
+  owner_username VARCHAR(25) REFERENCES users(username) ON DELETE CASCADE
 );
 
 CREATE TABLE stat_blocks(
-  id INT REFERENCES initiative_entity ON DELETE CASCADE,
+  id INT REFERENCES initiative_entities ON DELETE CASCADE,
   PRIMARY KEY (id),
   png TEXT NOT NULL
   --fill out the stat once I have a proper connection to the DnD API
 );
 
 CREATE TABLE player_characters(
-  id INT REFERENCES initiative_entity ON DELETE CASCADE,
+  id INT REFERENCES initiative_entities ON DELETE CASCADE,
   PRIMARY KEY (id),
   player_name TEXT NOT NULL,
   ac INT NOT NULL,
@@ -35,7 +36,7 @@ CREATE TABLE player_characters(
 );
 
 CREATE TABLE non_player_characters(
-  id INT REFERENCES initiative_entity ON DELETE CASCADE,
+  id INT REFERENCES initiative_entities ON DELETE CASCADE,
   PRIMARY KEY (id),
   stat_block_id INT REFERENCES stat_blocks(id) ON DELETE CASCADE,
   created_by VARCHAR(25) REFERENCES users(username) ON DELETE CASCADE,
@@ -52,9 +53,9 @@ CREATE TABLE encounters(
 CREATE TABLE random_encounter_tables(
   id SERIAL PRIMARY KEY,
   descr TEXT NOT NULL,
-  encounter_id INT REFERENCES encounters(id) ON DELETE CASCADE,
   dice TEXT NOT NULL,
-  trigger INT NOT NULL
+  trigger INT NOT NULL,
+  owner_username VARCHAR(25) REFERENCES users(username) ON DELETE CASCADE
 );
 --may eventually need add a helper table for multiple stat block types
 
@@ -68,11 +69,12 @@ CREATE TABLE table_encounters(
 
 CREATE TABLE initiative_rows(
   table_id INT REFERENCES random_encounter_tables(id) ON DELETE CASCADE,
-  entity_id INT REFERENCES initiative_entity(id) ON DELETE CASCADE,
+  entity_id INT REFERENCES initiative_entities(id) ON DELETE CASCADE,
   PRIMARY KEY (table_id, entity_id),
   count INT DEFAULT 1,
   initiative INT NOT NULL
 );
+\i toolkit-seed.sql
 
 -- CREATE TABLE weather_tables(
 --   id SERIAL PRIMARY KEY,
