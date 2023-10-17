@@ -19,7 +19,7 @@ app.use("/users", usersRoutes);
 app.get("/", async function (req, res, next) {
   try {
     //const playerCharacters = await Book.findAll(req.query);
-    return res.json("{ playerCharacters }");
+    return res.json({ playerCharacters:"This has been updated" });
   } catch (err) {
     return next(err);
   }
