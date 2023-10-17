@@ -13,40 +13,26 @@ CREATE TABLE users (
   is_admin BOOLEAN
 );
 
+--splitting the different initiative entities into different tables overcomplicates the schema
+--far easier to just have the different forms only have the relavent fields visible
 CREATE TABLE initiative_entities(
   id SERIAL PRIMARY KEY,
   name TEXT NOT NULL,
   description TEXT NOT NULL,
-  owner_username VARCHAR(25) REFERENCES users(username) ON DELETE CASCADE
-);
-
-CREATE TABLE stat_blocks(
-  id INT REFERENCES initiative_entities ON DELETE CASCADE,
-  PRIMARY KEY (id),
-  png TEXT NOT NULL
+  owner_username VARCHAR(25) REFERENCES users(username) ON DELETE CASCADE,
+  created_by VARCHAR(25) REFERENCES users(username) ON DELETE SET NULL,
+  is_public BOOLEAN DEFAULT 'FALSE',
+  player_name TEXT,
+  ac INT,
+  passive_wis INT,
+  png TEXT
   --fill out the stat once I have a proper connection to the DnD API
+  --will probably need to make actions, attributes, and special abilities all separate mini tables
 );
-
-CREATE TABLE player_characters(
-  id INT REFERENCES initiative_entities ON DELETE CASCADE,
-  PRIMARY KEY (id),
-  player_name TEXT NOT NULL,
-  ac INT NOT NULL,
-  passive_wis INT NOT NULL
-);
-
-CREATE TABLE non_player_characters(
-  id INT REFERENCES initiative_entities ON DELETE CASCADE,
-  PRIMARY KEY (id),
-  stat_block_id INT REFERENCES stat_blocks(id) ON DELETE CASCADE,
-  created_by VARCHAR(25) REFERENCES users(username) ON DELETE CASCADE,
-  is_public BOOLEAN DEFAULT 'FALSE'
-);
---will probably need to make actions, attributes, and special abilities all separate mini tables
 CREATE TABLE encounters(
   id SERIAL PRIMARY KEY,
   descr TEXT NOT NULL,
-  stat_block_id INT REFERENCES stat_blocks(id) ON DELETE CASCADE,
+  stat_block_id INT REFERENCES initiative_entities(id) ON DELETE CASCADE,
   dice TEXT
 );
 
