@@ -25,8 +25,8 @@ router.get("/", async function (req, res, next) {
 
 router.get("/:id", async function (req, res, next) {
   try {
-    //const playerCharacter = await PlayerCharacter.findOne(req.params.id);
-    return res.json({ message:"Data of a specific PC" });
+    const playerCharacter = await PlayerCharacter.findOne(req.params.id,res.locals.user.username);
+    return res.json({playerCharacter});
   } catch (err) {
     return next(err);
   }
@@ -57,11 +57,12 @@ router.post("/", async function (req, res, next) {
   }
 });
 
-/** PUT /[id]   playerCharacterData => {playerCharacter: updatedPlayerCharacter}  */
+/** PUT /[id]   playerCharacterData => {playerCharacter: updatedPlayerCharacter} 
+ * Updates an existing PC
+ */
 
 router.put("/:id", async function (req, res, next) {
   try {
-    return res.json({message:"Updates an existing PC"})
     //use validation example from API Validation note sheet
     const result = jsonschema.validate(req.body, playerCharacterSchema);
   
@@ -74,7 +75,7 @@ router.put("/:id", async function (req, res, next) {
     }
   
     // at this point in code, we know we have a valid payload
-    const playerCharacter = await PlayerCharacter.update(req.params.id, req.body);
+    const playerCharacter = await PlayerCharacter.update(req.params.id, req.body,res.locals.user.username);
     return res.json({ playerCharacter });
   } catch (err) {
     return next(err);
@@ -85,8 +86,7 @@ router.put("/:id", async function (req, res, next) {
 
 router.delete("/:id", async function (req, res, next) {
   try {
-    return res.json({message:"Removes an existing PC"})
-    await PlayerCharacter.remove(req.params.id);
+    await PlayerCharacter.remove(req.params.id, res.locals.user.username);
     return res.json({ message: "PlayerCharacter deleted" });
   } catch (err) {
     return next(err);
