@@ -1,0 +1,63 @@
+{
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "default": {},
+    "title": "Root Schema",
+    "required": [
+        "name",
+        "description",
+        "playerName",
+        "passiveWis",
+        "ac"
+    ],
+    "properties": {
+        "name": {
+            "type": "string",
+            "default": "",
+            "title": "Character's name",
+            "examples": [
+                "Eldon Raulnor"
+            ]
+        },
+        "description": {
+            "type": "string",
+            "default": "",
+            "title": "Character backstory",
+            "examples": [
+                "Old wizard who went through more that a couple permutations"
+            ]
+        },
+        "playerName": {
+            "type": "string",
+            "default": "",
+            "title": "The player who made the character",
+            "examples": [
+                "John"
+            ]
+        },
+        "passiveWis": {
+            "type": "integer",
+            "default": 0,
+            "title": "The passiveWis Schema",
+            "examples": [
+                14
+            ]
+        },
+        "ac": {
+            "type": "integer",
+            "default": 0,
+            "title": "The armor class Schema",
+            "examples": [
+                18
+            ]
+        }
+    },
+    "examples": [{
+        "name":"Eldon Raulnor",
+        "description": "Gnomish conjuration wizard who has literally been through hell",
+        "playerName": "ジョン",
+        "passiveWis": 12,
+        "ac":16
+    }]
+  }

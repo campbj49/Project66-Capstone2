@@ -1,4 +1,4 @@
-/** Express app for bookstore. */
+/** Express app for Dungeon Master toolkit. */
 
 
 const express = require("express");
@@ -6,19 +6,20 @@ const app = express();
 
 app.use(express.json());
 
-const ExpressError = require("./expressError")
-const bookRoutes = require("./routes/books");
+const ExpressError = require("./expressError");
+const { ensureLoggedIn, authenticateJWT } = require("./middleware/auth");
+const playerCharacterRoutes = require("./routes/playerCharacters");
 const authRoutes = require("./routes/auth");
 const usersRoutes = require("./routes/users");
 
-app.use("/books", bookRoutes);
+app.use("/pcs", authenticateJWT, ensureLoggedIn, playerCharacterRoutes);
 app.use("/auth", authRoutes);
 app.use("/users", usersRoutes);
 
 app.get("/", async function (req, res, next) {
   try {
-    //const books = await Book.findAll(req.query);
-    return res.json("{ books }");
+    //const playerCharacters = await Book.findAll(req.query);
+    return res.json("{ playerCharacters }");
   } catch (err) {
     return next(err);
   }
