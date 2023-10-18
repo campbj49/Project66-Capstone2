@@ -14,6 +14,8 @@ CREATE TABLE initiative_entities(
   id SERIAL PRIMARY KEY,
   name TEXT NOT NULL,
   description TEXT NOT NULL,
+  type TEXT DEFAULT 'Monster',
+  CHECK (type in ('Monster', 'NPC', 'PC')),
   owner_username VARCHAR(25) REFERENCES users(username) ON DELETE CASCADE,
   created_by VARCHAR(25) REFERENCES users(username) ON DELETE SET NULL,
   is_public BOOLEAN DEFAULT 'FALSE',

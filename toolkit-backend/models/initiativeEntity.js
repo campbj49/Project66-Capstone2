@@ -1,5 +1,6 @@
 const { user } = require("pg/lib/defaults");
 const db = require("../db");
+const { sqlForPartialUpdate, sqlResToJs } = require("../helpers/sql");
 
 
 /** Collection of related methods for player characters */
@@ -12,41 +13,19 @@ class InitiativeEntity {
      * on a success returns {name, description, owner_username, player_name, ac, passive_wis}
      */
 
-    static async create(
-        {name, description, playerName, ac, passiveWis}, ownerUsername
-    ){
+    static async create(data, ownerUsername){
+        //convert the data into its SQL readable format
+        const {values, createdVals} = sqlForPartialUpdate({...data, ownerUsername:ownerUsername});
+
         //start by creating the base initiative entity record
         const entityResult = await db.query(
-              `INSERT INTO initiative_entities
-               (
-                    name,
-                    description,
-                    owner_username,
-                    player_name,
-                    ac,
-                    passive_wis
-                )
-               VALUES ($1, $2, $3, $4, $5, $6)
-               RETURNING 
-                    id, 
-                    name, 
-                    description, 
-                    owner_username AS "ownerUsername",
-                    player_name AS "playerName",
-                    ac,
-                    passive_wis AS "passiveWis"`,
-            [
-              name,
-              description,
-              ownerUsername,
-              playerName,
-              ac,
-              passiveWis
-            ],
+              `INSERT INTO initiative_entities(${createdVals.cols})
+               VALUES (${createdVals.idx})
+               RETURNING *`,
+            values,
         );
-
-    
-        return entityResult.rows[0];
+        
+        return sqlResToJs(entityResult.rows[0]);
     }
 
     /**

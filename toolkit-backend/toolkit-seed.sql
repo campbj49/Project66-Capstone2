@@ -12,10 +12,10 @@ VALUES ('testuser',
         'joel@joelburton.com',
         TRUE);
 
-INSERT INTO initiative_entities (name, description, owner_username, created_by, png, player_name, ac, passive_wis)
-    VALUES  ('testNPC', 'exampe NPC inserted at DB creation', 'testuser', 'testuser',NULL, NULL,NULL,NULL),
-            ('testPC', 'exampe PC inserted at DB creation', 'testuser', 'testuser',NULL,'Jimmy John', 15, 8),
-            ('testMonster', 'exampe Monster inserted at DB creation', 'testadmin', 'testuser', 'placeholderPNGURL', NULL,NULL,NULL);
+INSERT INTO initiative_entities (name, description,type, owner_username, created_by, png, player_name, ac, passive_wis)
+    VALUES  ('testNPC', 'exampe NPC inserted at DB creation', 'NPC', 'testuser', 'testuser',NULL, NULL,NULL,NULL),
+            ('testPC', 'exampe PC inserted at DB creation', 'PC', 'testuser', 'testuser',NULL,'Jimmy John', 15, 8),
+            ('testMonster', 'exampe Monster inserted at DB creation', 'Monster', 'testadmin', 'testuser', 'placeholderPNGURL', NULL,NULL,NULL);
 
 INSERT INTO encounters (descr, stat_block_id, dice)
 VALUES ('Example encounter', 3, '1d4');

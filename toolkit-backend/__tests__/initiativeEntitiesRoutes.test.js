@@ -80,6 +80,7 @@ describe("InitiativeEntity Routes Test", function () {
         .send({
           "name":"Xander",
           "description":"Knight in Shining Armor",
+          "type":"PC",
           "playerName":"ジョン",
           "passiveWis":9,
           "ac":25
@@ -90,6 +91,7 @@ describe("InitiativeEntity Routes Test", function () {
           id: expect.any(Number),
           name: 'Xander',
           description: 'Knight in Shining Armor',
+          type:"PC",
           ownerUsername: 'testuser',
           playerName: 'ジョン',
           ac: 25,
