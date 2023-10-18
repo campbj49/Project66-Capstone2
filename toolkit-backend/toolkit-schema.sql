@@ -1,8 +1,3 @@
-DROP DATABASE toolkit;
-CREATE DATABASE toolkit;
-
-\c toolkit
-
 CREATE TABLE users (
   username VARCHAR(25) PRIMARY KEY,
   password TEXT NOT NULL,
@@ -60,7 +55,6 @@ CREATE TABLE initiative_rows(
   count INT DEFAULT 1,
   initiative INT NOT NULL
 );
-\i toolkit-seed.sql
 
 -- CREATE TABLE weather_tables(
 --   id SERIAL PRIMARY KEY,

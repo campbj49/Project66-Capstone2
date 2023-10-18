@@ -56,7 +56,7 @@ class InitiativeEntity {
      */
 
     static async findAll(username){
-        //get all the PCs associated with a particular user
+        //get all the IEs associated with a particular user
         const pcListResults = await db.query(
             `SELECT * FROM initiative_entities 
             WHERE owner_username = $1`,
@@ -69,28 +69,29 @@ class InitiativeEntity {
 
     /**
      * 
-     * @param {Int} id Database ID of PC being pulled
+     * @param {Int} id Database ID of IE being pulled
      * @param {String} username 
      * @returns {Object} {id, ownerUsername, ...}
      */
 
     static async findOne(id, username){
-        console.log("Finding specific PC")
-        //get all the PCs associated with a particular user
+        //get all the IEs associated with a particular user
         const pcResults = await db.query(
-            `SELECT * FROM initiative_entities 
-            owner_username = $1 AND id = $2`,
+            `SELECT * FROM initiative_entities
+            WHERE owner_username = $1 AND id = $2`,
             [
                 username,
                 id,
             ],
         );
+        //catch when the user doesn't own the id
+        if(!pcResults.rows[0]) return {};
         return pcResults.rows[0];
     }
 
     /**
      * 
-     * @param {Int} id PC being updated
+     * @param {Int} id IE being updated
      * @param {Object} data Fields being updated
      * @param {*} username 
      * 
@@ -105,7 +106,7 @@ class InitiativeEntity {
                SET
                     name = $1,
                     description = $2,
-                    owner_username = $3
+                    owner_username = $3,
                     player_name = $4,
                     ac=$5,
                     passive_wis = $6

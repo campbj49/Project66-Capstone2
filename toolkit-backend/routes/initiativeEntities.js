@@ -9,7 +9,7 @@ const router = new express.Router();
 
 
 /** GET / => {initiativeEntities: [initiativeEntity, ...]} 
- * returns the list of PCs associated with a user
+ * returns the list of IEs associated with a user
  */
 
 router.get("/", async function (req, res, next) {
@@ -33,7 +33,7 @@ router.get("/:id", async function (req, res, next) {
 });
 
 /** POST /   initiativeEntityData => {initiativeEntity: newInitiativeEntity}
- * adds a new PC to the logged in user
+ * adds a new IE to the logged in user
   */
 
 router.post("/", async function (req, res, next) {
@@ -58,7 +58,7 @@ router.post("/", async function (req, res, next) {
 });
 
 /** PUT /[id]   initiativeEntityData => {initiativeEntity: updatedInitiativeEntity} 
- * Updates an existing PC
+ * Updates an existing IE
  */
 
 router.put("/:id", async function (req, res, next) {
