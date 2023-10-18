@@ -4,7 +4,7 @@ const db = require("../db");
 
 /** Collection of related methods for player characters */
 
-class PlayerCharacter {
+class InitiativeEntity {
     /**
      * Adds a player character to the database
      * throws an error if any of the information is missing
@@ -21,41 +21,32 @@ class PlayerCharacter {
                (
                     name,
                     description,
-                    owner_username
+                    owner_username,
+                    player_name,
+                    ac,
+                    passive_wis
                 )
-               VALUES ($1, $2, $3)
-               RETURNING id, name, description, owner_username AS "ownerUsername"`,
+               VALUES ($1, $2, $3, $4, $5, $6)
+               RETURNING 
+                    id, 
+                    name, 
+                    description, 
+                    owner_username AS "ownerUsername",
+                    player_name AS "playerName",
+                    ac,
+                    passive_wis AS "passiveWis"`,
             [
               name,
               description,
-              ownerUsername
+              ownerUsername,
+              playerName,
+              ac,
+              passiveWis
             ],
         );
-    
-        let PC = entityResult.rows[0];
-
-        const pcResult = await db.query(
-            `INSERT INTO player_characters
-            (
-                id,
-                player_name,
-                ac,
-                passive_wis
-            )
-            VALUES ($1, $2, $3, $4)
-            RETURNING player_name AS "playerName", ac, passive_wis AS "passiveWis"`,
-            [
-                PC.id,
-                playerName,
-                ac,
-                passiveWis
-            ],
-        );
-        
-        PC = {...PC, ... pcResult.rows[0]}
 
     
-        return PC;
+        return entityResult.rows[0];
     }
 
     /**
@@ -67,9 +58,8 @@ class PlayerCharacter {
     static async findAll(username){
         //get all the PCs associated with a particular user
         const pcListResults = await db.query(
-            `SELECT * FROM initiative_entities AS ies
-            INNER JOIN player_characters AS pcs ON ies.id = pcs.id
-            WHERE ies.owner_username = $1`,
+            `SELECT * FROM initiative_entities 
+            WHERE owner_username = $1`,
             [
                 username,
             ],
@@ -88,9 +78,8 @@ class PlayerCharacter {
         console.log("Finding specific PC")
         //get all the PCs associated with a particular user
         const pcResults = await db.query(
-            `SELECT * FROM initiative_entities AS ies
-            INNER JOIN player_characters AS pcs ON ies.id = pcs.id
-            WHERE ies.owner_username = $1 AND ies.id = $2`,
+            `SELECT * FROM initiative_entities 
+            owner_username = $1 AND id = $2`,
             [
                 username,
                 id,
@@ -117,38 +106,30 @@ class PlayerCharacter {
                     name = $1,
                     description = $2,
                     owner_username = $3
-                WHERE id = $4
-                RETURNING id, name, description, owner_username AS "ownerUsername"`,
+                    player_name = $4,
+                    ac=$5,
+                    passive_wis = $6
+                WHERE id = $7
+                RETURNING 
+                    id, 
+                    name, 
+                    description, 
+                    owner_username AS "ownerUsername",
+                    player_name AS "playerName",
+                    ac,
+                    passive_wis AS "passiveWis"`,
             [
               name,
               description,
               ownerUsername,
+              playerName,
+              ac,
+              passiveWis,
               id
             ],
         );
-    
-        let PC = entityResult.rows[0];
 
-        const pcResult = await db.query(
-            `UPDATE player_characters
-            SET
-                player_name = $2,
-                ac=$3,
-                passive_wis = $4
-            WHERE id = $1
-            RETURNING player_name AS "playerName", ac, passive_wis AS "passiveWis"`,
-            [
-                PC.id,
-                playerName,
-                ac,
-                passiveWis
-            ],
-        );
-        
-        PC = {...PC, ... pcResult.rows[0]}
-
-    
-        return PC;
+        return entityResult.rows[0];
     }
 
     static async remove(id, username){
@@ -159,4 +140,4 @@ class PlayerCharacter {
     }
 }
 
-module.exports = PlayerCharacter;
+module.exports = InitiativeEntity;

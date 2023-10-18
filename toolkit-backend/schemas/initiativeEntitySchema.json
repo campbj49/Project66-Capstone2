@@ -6,10 +6,7 @@
     "title": "Root Schema",
     "required": [
         "name",
-        "description",
-        "playerName",
-        "passiveWis",
-        "ac"
+        "description"
     ],
     "properties": {
         "name": {

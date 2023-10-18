@@ -6,20 +6,20 @@ const app = express();
 
 app.use(express.json());
 
-const ExpressError = require("./expressError");
+const {ExpressError} = require("./expressError");
 const { ensureLoggedIn, authenticateJWT } = require("./middleware/auth");
-const playerCharacterRoutes = require("./routes/playerCharacters");
+const initiativeEntityRoutes = require("./routes/initiativeEntities");
 const authRoutes = require("./routes/auth");
 const usersRoutes = require("./routes/users");
 
-app.use("/pcs", authenticateJWT, ensureLoggedIn, playerCharacterRoutes);
+app.use("/ies", authenticateJWT, ensureLoggedIn, initiativeEntityRoutes);
 app.use("/auth", authRoutes);
 app.use("/users", usersRoutes);
 
 app.get("/", async function (req, res, next) {
   try {
-    //const playerCharacters = await Book.findAll(req.query);
-    return res.json({ playerCharacters:"This has been updated and again" });
+    //const initiativeEntities = await Book.findAll(req.query);
+    return res.json({ initiativeEntities:"This has been updated and again" });
   } catch (err) {
     return next(err);
   }
