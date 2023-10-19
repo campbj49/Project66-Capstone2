@@ -9,10 +9,12 @@ app.use(express.json());
 const {ExpressError} = require("./expressError");
 const { ensureLoggedIn, authenticateJWT } = require("./middleware/auth");
 const initiativeEntityRoutes = require("./routes/initiativeEntities");
+const encounterRoutes = require("./routes/encounters");
 const authRoutes = require("./routes/auth");
 const usersRoutes = require("./routes/users");
 
 app.use("/ies", authenticateJWT, ensureLoggedIn, initiativeEntityRoutes);
+app.use("/encounters", authenticateJWT, ensureLoggedIn, encounterRoutes);
 app.use("/auth", authRoutes);
 app.use("/users", usersRoutes);
 
