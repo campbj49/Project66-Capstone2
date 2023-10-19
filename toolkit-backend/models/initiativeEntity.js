@@ -63,6 +63,7 @@ class InitiativeEntity {
                 id,
             ],
         );
+
         //catch when the user doesn't own the id
         if(!pcResults.rows[0]) return {};
         return pcResults.rows[0];
@@ -76,40 +77,23 @@ class InitiativeEntity {
      * 
      * @returns {Object} {updatedCharacter:{id, desc,...}}
      */
-    static async update(
-        id,{name, description, playerName, ac, passiveWis}, ownerUsername
-    ){
+    static async update(id,data, ownerUsername){
+        //proces the data into usable form
+        const {setCols, values} = sqlForPartialUpdate(data);
+        let idIndex = values.length + 1;
+        let usernameIndex = idIndex + 1;
+
+        console.log(values);
         //start by creating the base initiative entity record
         const entityResult = await db.query(
               `UPDATE initiative_entities
-               SET
-                    name = $1,
-                    description = $2,
-                    owner_username = $3,
-                    player_name = $4,
-                    ac=$5,
-                    passive_wis = $6
-                WHERE id = $7
-                RETURNING 
-                    id, 
-                    name, 
-                    description, 
-                    owner_username AS "ownerUsername",
-                    player_name AS "playerName",
-                    ac,
-                    passive_wis AS "passiveWis"`,
-            [
-              name,
-              description,
-              ownerUsername,
-              playerName,
-              ac,
-              passiveWis,
-              id
-            ],
+               SET ${setCols}
+                WHERE id = $${idIndex} AND owner_username = $${usernameIndex}
+                RETURNING *`,
+            [...values, id, ownerUsername],
         );
 
-        return entityResult.rows[0];
+        return sqlResToJs(entityResult.rows[0]);
     }
 
     static async remove(id, username){

@@ -26,10 +26,9 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql = IEJsToSql) {
   let createVals = {cols:[], idx:[]}
   // {firstName: 'Aliya', age: 32} => ['"first_name"=$1', '"age"=$2']
   const cols = keys.map((colName, idx) =>{
-      `"${jsToSql[colName] || colName}"=$${idx + 1}`;
       createVals.cols.push(jsToSql[colName] || colName);
       createVals.idx.push(`$${idx + 1}`);
-
+      return `"${jsToSql[colName] || colName}"=$${idx + 1}`;
     },
   );
 
