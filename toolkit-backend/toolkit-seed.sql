@@ -17,12 +17,12 @@ INSERT INTO initiative_entities (name, description,type, owner_username, created
             ('testPC', 'exampe PC inserted at DB creation', 'PC', 'testuser', 'testuser',NULL,'Jimmy John', 15, 8),
             ('testMonster', 'exampe Monster inserted at DB creation', 'Monster', 'testadmin', 'testuser', 'placeholderPNGURL', NULL,NULL,NULL);
 
-INSERT INTO encounters (descr, stat_block_id, dice)
-VALUES ('Example encounter', 3, '1d4');
+INSERT INTO encounters (description, owner_username, created_by, stat_block_id, dice)
+VALUES ('Example encounter', 'testuser', 'testuser', 3, '1d4');
 
 
-INSERT INTO random_encounter_tables (descr, dice, trigger, owner_username)
-VALUES ('Example table', '1d8+1d12', 18, 'testuser');
+INSERT INTO random_encounter_tables (description, owner_username, created_by, dice, trigger)
+VALUES ('Example table', 'testuser', 'testuser', '1d8+1d12', 18);
 
 INSERT INTO table_encounters (table_id, encounter_id, range_start, range_end)
 VALUES (1,1,5,10);

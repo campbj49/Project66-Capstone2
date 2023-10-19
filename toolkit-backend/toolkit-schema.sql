@@ -28,17 +28,22 @@ CREATE TABLE initiative_entities(
 );
 CREATE TABLE encounters(
   id SERIAL PRIMARY KEY,
-  descr TEXT NOT NULL,
+  description TEXT NOT NULL,
+  owner_username VARCHAR(25) REFERENCES users(username) ON DELETE CASCADE,
+  created_by VARCHAR(25) REFERENCES users(username) ON DELETE SET NULL,
+  is_public BOOLEAN DEFAULT 'FALSE',
   stat_block_id INT REFERENCES initiative_entities(id) ON DELETE CASCADE,
   dice TEXT
 );
 
 CREATE TABLE random_encounter_tables(
   id SERIAL PRIMARY KEY,
-  descr TEXT NOT NULL,
+  description TEXT NOT NULL,
+  owner_username VARCHAR(25) REFERENCES users(username) ON DELETE CASCADE,
+  created_by VARCHAR(25) REFERENCES users(username) ON DELETE SET NULL,
+  is_public BOOLEAN DEFAULT 'FALSE',
   dice TEXT NOT NULL,
-  trigger INT NOT NULL,
-  owner_username VARCHAR(25) REFERENCES users(username) ON DELETE CASCADE
+  trigger INT NOT NULL
 );
 --may eventually need add a helper table for multiple stat block types
 

@@ -10,6 +10,10 @@ describe("sqlForPartialUpdate", function () {
     expect(result).toEqual({
       setCols: "\"f1\"=$1",
       values: ["v1"],
+      createdVals:{
+        cols:["f1"],
+        idx:["$1"]
+      }
     });
   });
 
@@ -20,6 +24,10 @@ describe("sqlForPartialUpdate", function () {
     expect(result).toEqual({
       setCols: "\"f1\"=$1, \"f2\"=$2",
       values: ["v1", "v2"],
+      createdVals:{
+        cols:["f1","f2"],
+        idx:["$1","$2"]
+      }
     });
   });
 });
