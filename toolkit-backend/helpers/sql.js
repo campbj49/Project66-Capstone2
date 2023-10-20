@@ -70,6 +70,7 @@ const IEJsToSql = {
   isPublic:"is_public",
   playerName:"player_name",
   passiveWis:"passive_wis",
+  statBlockId:"stat_block_id",
   //to be extended as more details are added to the stat block
 }
 

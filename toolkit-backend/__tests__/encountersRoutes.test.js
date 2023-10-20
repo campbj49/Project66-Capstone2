@@ -85,6 +85,7 @@ describe("encounter Routes Test", function () {
       expect(newencounter).toEqual({
           id: expect.any(Number),
           description: 'Orcs in a forest',
+          ownerUsername:"testuser",
           statBlockId:1,
           dice:"1d8+1d12"
         }
@@ -125,6 +126,7 @@ describe("encounter Routes Test", function () {
       expect(newencounter).toEqual({
         id: expect.any(Number),
         description: 'Orcs in a desert',
+        ownerUsername:"testuser",
         statBlockId:1,
         dice:"1d8+1d12"
       });
