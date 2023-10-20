@@ -1,19 +1,44 @@
 {
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "type": "object",
-    "properties": {
-      "description": {
-        "type": "string"
-      },
-      "dice": {
-        "type": "string"
-      },
-      "trigger": {
-        "type": "integer"
-      }
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "description": {
+      "type": "string"
     },
-    "required": [
-      "description",
-      "dice"
-    ]
-  }
+    "dice": {
+      "type": "string"
+    },
+    "trigger": {
+      "type": "integer"
+    },
+    "encounters": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/row" }
+    }
+  },
+  "$defs":{
+    "row":{
+      "type": "object",
+      "required": [
+        "id",
+        "rangeStart",
+        "rangeEnd"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "rangeStart": {
+          "type": "integer"
+        },
+        "rangeEnd": {
+          "type": "integer"
+        }
+      }
+    }
+  },
+  "required": [
+    "description",
+    "dice"
+  ]
+}

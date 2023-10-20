@@ -22,7 +22,7 @@ describe("encounter Routes Test", function () {
     
     let I1 = await encounter.create({
       "description":"Orcs in a forest",
-      "stat_block_id":1,
+      "statBlockId":1,
       "dice":"1d8+1d12",
     }, "testuser");
     id = I1.id;
@@ -77,7 +77,7 @@ describe("encounter Routes Test", function () {
         .set({'Authorization':token})
         .send({
             "description":"Orcs in a forest",
-            "stat_block_id":1,
+            "statBlockId":1,
             "dice":"1d8+1d12",
         });
 
@@ -119,14 +119,14 @@ describe("encounter Routes Test", function () {
         .set({'Authorization':token})
         .send({
             "description":"Orcs in a desert",
-            "stat_block_id":1,
+            "statBlockId":1,
             "dice":"1d8+1d12",
         });
       let newencounter = response.body.encounter;
       expect(newencounter).toEqual({
         id: expect.any(Number),
         description: 'Orcs in a desert',
-        ownerUsername:"testuser",
+          ownerUsername:"testuser",
         statBlockId:1,
         dice:"1d8+1d12"
       });

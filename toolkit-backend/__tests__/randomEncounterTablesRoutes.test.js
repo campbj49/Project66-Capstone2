@@ -6,6 +6,23 @@ const RandomEncounterTable = require("../models/randomEncounterTable");
 process.env.NODE_ENV = "test";
 let token;
 let id;
+const exampleEncounter ={
+    "description":"The high seas",
+    "dice":"1d8+1d12",
+    "trigger":19,
+    "encounters":[
+      {
+        "id":1,
+        "rangeStart":2,
+        "rangeEnd":3
+      },
+      {
+        "id":2,
+        "rangeStart":4,
+        "rangeEnd":5
+      }
+    ]
+  };
 
 //modified Auth Test Routes from last project to support randomEncounterTable tests
 describe("RandomEncounterTable Routes Test", function () {
@@ -21,10 +38,22 @@ describe("RandomEncounterTable Routes Test", function () {
     token = token.body.token;
     
     let I1 = await RandomEncounterTable.create({
-      "description":"The high seas",
-      "dice":"1d8+1d12",
-      "trigger":19,
-    }, "testuser");
+        "description":"The high seas",
+        "dice":"1d8+1d12",
+        "trigger":19,
+        "encounters":[
+          {
+            "id":1,
+            "rangeStart":2,
+            "rangeEnd":3
+          },
+          {
+            "id":2,
+            "rangeStart":4,
+            "rangeEnd":5
+          }
+        ]
+      }, "testuser");
     id = I1.id;
   });
 
@@ -79,15 +108,38 @@ describe("RandomEncounterTable Routes Test", function () {
             "description":"The high seas",
             "dice":"1d8+1d12",
             "trigger":19,
-        });
-
+            "encounters":[
+              {
+                "id":1,
+                "rangeStart":2,
+                "rangeEnd":3
+              },
+              {
+                "id":2,
+                "rangeStart":4,
+                "rangeEnd":5
+              }
+            ]
+          });
       let newRandomEncounterTable = response.body.randomEncounterTable;
       expect(newRandomEncounterTable).toEqual({
           id: expect.any(Number),
           description: 'The high seas',
           dice:"1d8+1d12",
           ownerUsername: 'testuser',
-          trigger:19
+          trigger:19,
+          encounters:[
+            {
+                id:1,
+                rangeStart:2,
+                rangeEnd:3
+            },
+            {
+                id:2,
+                rangeStart:4,
+                rangeEnd:5
+            }
+          ]
         }
       );
     });
@@ -99,11 +151,23 @@ describe("RandomEncounterTable Routes Test", function () {
         .send({
             "description":"The high seas",
             "trigger":19,
+            "encounters":[
+              {
+                "rangeStart":2,
+                "rangeEnd":3
+              },
+              {
+                "id":2,
+                "rangeStart":4,
+                "rangeEnd":5
+              }
+            ],
         });
 
       let error = response.body.error;
       expect(error).toEqual({
         "message": [
+            "instance.encounters[0] requires property \"id\"",
             "instance requires property \"dice\""
         ],
         "status": 400
@@ -128,7 +192,19 @@ describe("RandomEncounterTable Routes Test", function () {
         description: 'The low desert',
         dice:"1d12",
         ownerUsername: 'testuser',
-        trigger:19
+        trigger:19,
+        encounters:[
+          {
+              id:1,
+              rangeStart:2,
+              rangeEnd:3
+          },
+          {
+              id:2,
+              rangeStart:4,
+              rangeEnd:5
+          }
+        ]
       });
     });
 
@@ -139,11 +215,23 @@ describe("RandomEncounterTable Routes Test", function () {
         .send({
             "description":"The high seas",
             "trigger":19,
+            "encounters":[
+              {
+                "rangeStart":2,
+                "rangeEnd":3
+              },
+              {
+                "id":2,
+                "rangeStart":4,
+                "rangeEnd":5
+              }
+            ],
         });
 
       let error = response.body.error;
       expect(error).toEqual({
         "message": [
+            "instance.encounters[0] requires property \"id\"",
             "instance requires property \"dice\""
         ],
         "status": 400

@@ -14,6 +14,9 @@ class RandomEncounterTable {
      */
 
     static async create(data, ownerUsername){
+        //Split the encounters off of the given data
+        let encounters = data.encounters;
+        delete data.encounters;
         //convert the data into its SQL readable format
         const {values, createdVals} = sqlForPartialUpdate({...data, ownerUsername:ownerUsername});
 
