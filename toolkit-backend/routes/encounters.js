@@ -14,8 +14,8 @@ const router = new express.Router();
 
 router.get("/", async function (req, res, next) {
   try {
-    //const encounters = await Encounter.findAll(res.locals.user.username);
-    return res.json({ encounters:"TODO: list of encoutners" });
+    const encounters = await Encounter.findAll(res.locals.user.username);
+    return res.json({ encounters });
   } catch (err) {
     return next(err);
   }
@@ -25,7 +25,6 @@ router.get("/", async function (req, res, next) {
 
 router.get("/:id", async function (req, res, next) {
   try {
-    return res.json({ encounters:"TODO: individual encounter" });
     const encounter = await Encounter.findOne(req.params.id,res.locals.user.username);
     return res.json({encounter});
   } catch (err) {
@@ -39,7 +38,6 @@ router.get("/:id", async function (req, res, next) {
 
 router.post("/", async function (req, res, next) {
   try {
-    return res.json({ encounters:"TODO: adding encounter" });
     //use validation example from API Validation note sheet
     const result = jsonschema.validate(req.body, encounterSchema);
   
@@ -65,7 +63,6 @@ router.post("/", async function (req, res, next) {
 
 router.put("/:id", async function (req, res, next) {
   try {
-    return res.json({ encounters:"TODO: updating encounter" });
     //use validation example from API Validation note sheet
     const result = jsonschema.validate(req.body, encounterSchema);
   
@@ -89,9 +86,8 @@ router.put("/:id", async function (req, res, next) {
 
 router.delete("/:id", async function (req, res, next) {
   try {
-    return res.json({ encounters:"TODO: delete encounter" });
     await Encounter.remove(req.params.id, res.locals.user.username);
-    return res.json({ message: "Encounter deleted" });
+    return res.json({ message: "encounter deleted" });
   } catch (err) {
     return next(err);
   }
