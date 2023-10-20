@@ -20,12 +20,12 @@
     "row":{
       "type": "object",
       "required": [
-        "id",
+        "encounterId",
         "rangeStart",
         "rangeEnd"
       ],
       "properties": {
-        "id": {
+        "encounterId": {
           "type": "integer"
         },
         "rangeStart": {

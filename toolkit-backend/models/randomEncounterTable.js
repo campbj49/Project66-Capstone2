@@ -19,7 +19,6 @@ class RandomEncounterTable {
         delete data.encounters;
         //convert the data into its SQL readable format
         const {values, createdVals} = sqlForPartialUpdate({...data, ownerUsername:ownerUsername});
-
         //start by creating the base random encounter table record
         const tableResult = await db.query(
               `INSERT INTO random_encounter_tables(${createdVals.cols})
@@ -27,8 +26,38 @@ class RandomEncounterTable {
                RETURNING *`,
             values,
         );
+        let tableHeader = sqlResToJs(tableResult.rows[0])
+
+        //do the same process for each of the encounters rows
+        let encounterCols;
+        let encounterVals = [];
+        let idxCount = 1;
+        let encounterIdx = "";
+        //load values into variables
+        for(let encounter of encounters){
+            const {values, createdVals} = sqlForPartialUpdate({tableId:tableHeader.id,...encounter});
+            encounterCols = createdVals.cols;
+            encounterVals = encounterVals.concat(values);
+            encounterIdx +="(";
+            for(let i = 0; i<values.length;i++){
+                encounterIdx += '$'+ idxCount;
+                idxCount++;
+                if(i!=values.length-1) encounterIdx +=","
+            }
+            encounterIdx +="),";
+        }
+        //cut off the last comma
+        encounterIdx = encounterIdx.slice(0,-1);
+        console.log(encounterIdx);
+        const encounterResult = await db.query(
+              `INSERT INTO table_encounters(${encounterCols})
+               VALUES ${encounterIdx}
+               RETURNING *`,
+            encounterVals,
+        );
         
-        return sqlResToJs(tableResult.rows[0]);
+        tableHeader.encounters = sqlResToJs(encounterResult.rows)
+        return tableHeader;
     }
 
     /**

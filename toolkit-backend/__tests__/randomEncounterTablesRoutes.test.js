@@ -12,12 +12,12 @@ const exampleEncounter ={
     "trigger":19,
     "encounters":[
       {
-        "id":1,
+        "encounterId":1,
         "rangeStart":2,
         "rangeEnd":3
       },
       {
-        "id":2,
+        "encounterId":2,
         "rangeStart":4,
         "rangeEnd":5
       }
@@ -43,12 +43,12 @@ describe("RandomEncounterTable Routes Test", function () {
         "trigger":19,
         "encounters":[
           {
-            "id":1,
+            "encounterId":1,
             "rangeStart":2,
             "rangeEnd":3
           },
           {
-            "id":2,
+            "encounterId":2,
             "rangeStart":4,
             "rangeEnd":5
           }
@@ -110,12 +110,12 @@ describe("RandomEncounterTable Routes Test", function () {
             "trigger":19,
             "encounters":[
               {
-                "id":1,
+                "encounterId":1,
                 "rangeStart":2,
                 "rangeEnd":3
               },
               {
-                "id":2,
+                "encounterId":2,
                 "rangeStart":4,
                 "rangeEnd":5
               }
@@ -130,12 +130,12 @@ describe("RandomEncounterTable Routes Test", function () {
           trigger:19,
           encounters:[
             {
-                id:1,
+                encounterId:1,
                 rangeStart:2,
                 rangeEnd:3
             },
             {
-                id:2,
+                encounterId:2,
                 rangeStart:4,
                 rangeEnd:5
             }
@@ -157,7 +157,7 @@ describe("RandomEncounterTable Routes Test", function () {
                 "rangeEnd":3
               },
               {
-                "id":2,
+                "encounterId":2,
                 "rangeStart":4,
                 "rangeEnd":5
               }
@@ -195,12 +195,12 @@ describe("RandomEncounterTable Routes Test", function () {
         trigger:19,
         encounters:[
           {
-              id:1,
+              encounterId:1,
               rangeStart:2,
               rangeEnd:3
           },
           {
-              id:2,
+              encounterId:2,
               rangeStart:4,
               rangeEnd:5
           }
@@ -221,7 +221,7 @@ describe("RandomEncounterTable Routes Test", function () {
                 "rangeEnd":3
               },
               {
-                "id":2,
+                "encounterId":2,
                 "rangeStart":4,
                 "rangeEnd":5
               }

@@ -71,6 +71,10 @@ const IEJsToSql = {
   playerName:"player_name",
   passiveWis:"passive_wis",
   statBlockId:"stat_block_id",
+  tableId:"table_id",
+  encounterId:"encounter_id",
+  rangeStart:"range_start",
+  rangeEnd:"range_end",
   //to be extended as more details are added to the stat block
 }
 
