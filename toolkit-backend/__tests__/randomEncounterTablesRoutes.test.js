@@ -7,9 +7,11 @@ process.env.NODE_ENV = "test";
 let token;
 let id;
 const exampleEncounter ={
-    "description":"The high seas",
-    "dice":"1d8+1d12",
-    "trigger":19,
+    "data":{
+      "description":"The high seas",
+      "dice":"1d8+1d12",
+      "trigger":19,
+    },
     "encounters":[
       {
         "encounterId":1,
@@ -37,23 +39,10 @@ describe("RandomEncounterTable Routes Test", function () {
 
     token = token.body.token;
     
-    let I1 = await RandomEncounterTable.create({
-        "description":"The high seas",
-        "dice":"1d8+1d12",
-        "trigger":19,
-        "encounters":[
-          {
-            "encounterId":1,
-            "rangeStart":2,
-            "rangeEnd":3
-          },
-          {
-            "encounterId":2,
-            "rangeStart":4,
-            "rangeEnd":5
-          }
-        ]
-      }, "testuser");
+    let I1 = await RandomEncounterTable.create(
+      exampleEncounter.data,
+      exampleEncounter.encounters,
+      "testuser");
     id = I1.id;
   });
 
@@ -104,23 +93,7 @@ describe("RandomEncounterTable Routes Test", function () {
       let response = await request(app)
         .post("/ret")
         .set({'Authorization':token})
-        .send({
-            "description":"The high seas",
-            "dice":"1d8+1d12",
-            "trigger":19,
-            "encounters":[
-              {
-                "encounterId":1,
-                "rangeStart":2,
-                "rangeEnd":3
-              },
-              {
-                "encounterId":2,
-                "rangeStart":4,
-                "rangeEnd":5
-              }
-            ]
-          });
+        .send(exampleEncounter);
       let newRandomEncounterTable = response.body.randomEncounterTable;
       expect(newRandomEncounterTable).toEqual({
           id: expect.any(Number),
@@ -128,18 +101,20 @@ describe("RandomEncounterTable Routes Test", function () {
           dice:"1d8+1d12",
           ownerUsername: 'testuser',
           trigger:19,
-          encounters:[
-            {
+          encounters:{
+            "0":{
                 encounterId:1,
                 rangeStart:2,
-                rangeEnd:3
+                rangeEnd:3,
+                tableId: expect.any(Number)
             },
-            {
+            "1":{
                 encounterId:2,
                 rangeStart:4,
-                rangeEnd:5
+                rangeEnd:5,
+                tableId: expect.any(Number)
             }
-          ]
+          }
         }
       );
     });
@@ -167,8 +142,8 @@ describe("RandomEncounterTable Routes Test", function () {
       let error = response.body.error;
       expect(error).toEqual({
         "message": [
-            "instance.encounters[0] requires property \"id\"",
-            "instance requires property \"dice\""
+            "instance.encounters[0] requires property \"encounterId\"",
+            "instance requires property \"data\""
         ],
         "status": 400
     });
@@ -193,18 +168,20 @@ describe("RandomEncounterTable Routes Test", function () {
         dice:"1d12",
         ownerUsername: 'testuser',
         trigger:19,
-        encounters:[
-          {
+        encounters:{
+          "0":{
               encounterId:1,
               rangeStart:2,
-              rangeEnd:3
+              rangeEnd:3,
+              tableId: expect.any(Number)
           },
-          {
+          "1":{
               encounterId:2,
               rangeStart:4,
-              rangeEnd:5
+              rangeEnd:5,
+              tableId: expect.any(Number)
           }
-        ]
+        }
       });
     });
 
@@ -231,8 +208,8 @@ describe("RandomEncounterTable Routes Test", function () {
       let error = response.body.error;
       expect(error).toEqual({
         "message": [
-            "instance.encounters[0] requires property \"id\"",
-            "instance requires property \"dice\""
+            "instance.encounters[0] requires property \"encounterId\"",
+            "instance requires property \"data\""
         ],
         "status": 400
     });

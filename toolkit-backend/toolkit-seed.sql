@@ -18,7 +18,8 @@ INSERT INTO initiative_entities (name, description,type, owner_username, created
             ('testMonster', 'exampe Monster inserted at DB creation', 'Monster', 'testadmin', 'testuser', 'placeholderPNGURL', NULL,NULL,NULL);
 
 INSERT INTO encounters (description, owner_username, created_by, stat_block_id, dice)
-VALUES ('Example encounter', 'testuser', 'testuser', 3, '1d4');
+VALUES  ('Example encounter', 'testuser', 'testuser', 3, '1d4'),
+        ('Second example encounter', 'testuser', 'testuser', 1, '1d12');
 
 
 INSERT INTO random_encounter_tables (description, owner_username, created_by, dice, trigger)

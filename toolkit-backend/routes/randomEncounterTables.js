@@ -50,7 +50,10 @@ router.post("/", async function (req, res, next) {
     }
   
     // at this point in code, we know we have a valid payload
-    const randomEncounterTable = await RandomEncounterTable.create(req.body, res.locals.user.username);
+    const randomEncounterTable = await RandomEncounterTable.create(
+      req.body.data,
+      req.body.encounters,
+      res.locals.user.username);
     return res.status(201).json({ randomEncounterTable });
   } catch (err) {
     return next(err);
@@ -75,7 +78,11 @@ router.put("/:id", async function (req, res, next) {
     }
   
     // at this point in code, we know we have a valid payload
-    const randomEncounterTable = await RandomEncounterTable.update(req.params.id, req.body,res.locals.user.username);
+    const randomEncounterTable = await RandomEncounterTable.update(
+      req.params.id, 
+      req.body.data,
+      req.body.encounters,
+      res.locals.user.username);
     return res.json({ randomEncounterTable });
   } catch (err) {
     return next(err);
