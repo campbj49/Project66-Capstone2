@@ -1,3 +1,7 @@
+/*die size list:
+  CHECK (<collumn> IN (1,2,6,8,10,12,20,100)),
+ */
+
 CREATE TABLE users (
   username VARCHAR(25) PRIMARY KEY,
   password TEXT NOT NULL,
@@ -33,7 +37,10 @@ CREATE TABLE encounters(
   created_by VARCHAR(25) REFERENCES users(username) ON DELETE SET NULL,
   is_public BOOLEAN DEFAULT 'FALSE',
   stat_block_id INT REFERENCES initiative_entities(id) ON DELETE CASCADE,
-  dice TEXT
+  dice_size INT NOT NULL,
+  CHECK (dice_size IN (1,2,4,6,8,10,12,20,100)),
+  dice_count INT NOT NULL,
+  dice_modifier INT DEFAULT 0
 );
 
 CREATE TABLE random_encounter_tables(
@@ -42,7 +49,10 @@ CREATE TABLE random_encounter_tables(
   owner_username VARCHAR(25) REFERENCES users(username) ON DELETE CASCADE,
   created_by VARCHAR(25) REFERENCES users(username) ON DELETE SET NULL,
   is_public BOOLEAN DEFAULT 'FALSE',
-  dice TEXT NOT NULL,
+  dice_size INT NOT NULL,
+  CHECK (dice_size IN (1,2,4,6,8,10,12,20,100)),
+  dice_count INT NOT NULL,
+  range_max numeric GENERATED ALWAYS AS (dice_size*dice_count) STORED,
   trigger INT NOT NULL
 );
 --may eventually need add a helper table for multiple stat block types

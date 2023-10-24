@@ -8,12 +8,17 @@
       "statBlockId": {
         "type": "integer"
       },
-      "dice": {
-        "type": "string"
+      "diceCount": {
+        "type": "integer"
+      },
+      "diceSize": {
+        "type": "integer"
       }
     },
     "required": [
       "description",
-      "dice"
+      "statBlockId",
+      "diceCount",
+      "diceSize"
     ]
   }

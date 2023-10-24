@@ -23,7 +23,8 @@ describe("encounter Routes Test", function () {
     let I1 = await encounter.create({
       "description":"Orcs in a forest",
       "statBlockId":1,
-      "dice":"1d8+1d12",
+      "diceCount":1,
+      "diceSize":12,
     }, "testuser");
     id = I1.id;
   });
@@ -78,7 +79,8 @@ describe("encounter Routes Test", function () {
         .send({
             "description":"Orcs in a forest",
             "statBlockId":1,
-            "dice":"1d8+1d12",
+            "diceCount":1,
+            "diceSize":12,
         });
 
       let newencounter = response.body.encounter;
@@ -87,7 +89,8 @@ describe("encounter Routes Test", function () {
           description: 'Orcs in a forest',
           ownerUsername:"testuser",
           statBlockId:1,
-          dice:"1d8+1d12"
+          diceCount:1,
+          diceSize:12
         }
       );
     });
@@ -103,7 +106,10 @@ describe("encounter Routes Test", function () {
       let error = response.body.error;
       expect(error).toEqual({
         "message": [
-            "instance requires property \"dice\""
+            "instance requires property \"statBlockId\"",
+            "instance requires property \"diceCount\"",
+            "instance requires property \"diceSize\"",
+      
         ],
         "status": 400
     });
@@ -119,7 +125,8 @@ describe("encounter Routes Test", function () {
         .set({'Authorization':token})
         .send({
             "description":"Orcs in a desert",
-            "dice":"1d8+1d12",
+            "diceCount":1,
+            "diceSize":12,
         });
       let newencounter = response.body.encounter;
       expect(newencounter).toEqual({
@@ -127,7 +134,8 @@ describe("encounter Routes Test", function () {
         description: 'Orcs in a desert',
           ownerUsername:"testuser",
         statBlockId:1,
-        dice:"1d8+1d12"
+        diceCount:1,
+        diceSize:12
       });
     });
 

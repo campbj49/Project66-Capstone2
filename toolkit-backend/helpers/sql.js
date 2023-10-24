@@ -18,7 +18,7 @@ const { BadRequestError } = require("../expressError");
  *     values: ['Aliya', 32] }
  */
 
-function sqlForPartialUpdate(dataToUpdate, jsToSql = IEJsToSql) {
+function sqlForPartialUpdate(dataToUpdate, jsToSql = defaultJsToSql) {
   const keys = Object.keys(dataToUpdate);
   if (keys.length === 0) throw new BadRequestError("No data");
 
@@ -48,7 +48,7 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql = IEJsToSql) {
  * @returns {Object} SQL response object with null columns removed and column names converted
  * to js-style data fields
  */
-function sqlResToJs(sqlRes, jsToSql = IEJsToSql){
+function sqlResToJs(sqlRes, jsToSql = defaultJsToSql){
   //swap the values and keys of the jsToSql object
   let sqlToJs = {};
   for(let key in jsToSql)
@@ -64,7 +64,7 @@ function sqlResToJs(sqlRes, jsToSql = IEJsToSql){
 
 //jsToSql for the initiativeEntity class, to be used as the default value
 //as it will be the primary class using this function
-const IEJsToSql = {
+const defaultJsToSql = {
   ownerUsername:"owner_username",
   createdBy:"created_by",
   isPublic:"is_public",
@@ -75,6 +75,9 @@ const IEJsToSql = {
   encounterId:"encounter_id",
   rangeStart:"range_start",
   rangeEnd:"range_end",
+  diceSize:"dice_size",
+  diceCount:"dice_count",
+  rangeMax:"range_max"
   //to be extended as more details are added to the stat block
 }
 

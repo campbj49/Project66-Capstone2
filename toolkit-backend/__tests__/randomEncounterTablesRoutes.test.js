@@ -9,7 +9,8 @@ let id;
 const exampleEncounter ={
     "data":{
       "description":"The high seas",
-      "dice":"1d8+1d12",
+      "diceCount":1,
+      "diceSize":12,
       "trigger":19,
     },
     "encounters":[
@@ -98,9 +99,11 @@ describe("RandomEncounterTable Routes Test", function () {
       expect(newRandomEncounterTable).toEqual({
           id: expect.any(Number),
           description: 'The high seas',
-          dice:"1d8+1d12",
+          diceCount:1,
+          diceSize:12,
           ownerUsername: 'testuser',
           trigger:19,
+          rangeMax: "12",
           encounters:[
             {
                 encounterId:1,
@@ -160,16 +163,19 @@ describe("RandomEncounterTable Routes Test", function () {
         .send({
           "data":{
               "description":"The low desert",
-              "dice":"1d12"
+              "diceCount":2,
+              "diceSize":6,
           }
       });
       let newRandomEncounterTable = response.body.randomEncounterTable;
       expect(newRandomEncounterTable).toEqual({
         id: expect.any(Number),
         description: 'The low desert',
-        dice:"1d12",
+        diceCount:2,
+        diceSize:6,
         ownerUsername: 'testuser',
         trigger:19,
+        rangeMax: "12",
         encounters:[
           {
               encounterId:1,
@@ -194,7 +200,8 @@ describe("RandomEncounterTable Routes Test", function () {
         .send({
           "data":{
               "description":100,
-              "dice":"1d12"
+              "diceCount":1,
+              "diceSize":12,
           }
       });
 

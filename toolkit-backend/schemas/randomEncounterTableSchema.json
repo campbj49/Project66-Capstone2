@@ -6,15 +6,19 @@
       "type":"object",
       "required":[
         "description",
-        "dice",
+        "diceCount",
+        "diceSize",
         "trigger"
       ],
       "properties":{
           "description": {
             "type": "string"
           },
-          "dice": {
-            "type": "string"
+          "diceCount": {
+            "type": "integer"
+          },
+          "diceSize": {
+            "type": "integer"
           },
           "trigger": {
             "type": "integer"
