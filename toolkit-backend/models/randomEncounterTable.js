@@ -1,6 +1,12 @@
 const { user } = require("pg/lib/defaults");
 const db = require("../db");
 const { sqlForPartialUpdate, sqlResToJs } = require("../helpers/sql");
+const {
+  NotFoundError,
+  BadRequestError,
+  UnauthorizedError,
+} = require("../expressError");
+const { ValidatorResult } = require("jsonschema");
 
 
 /** Collection of related methods for player characters */
@@ -14,6 +20,8 @@ class RandomEncounterTable {
      */
 
     static async create(data, encounters, ownerUsername){
+        //validate the given ranges
+        validateRanges(encounters, data.diceCount, data.diceCount*data.diceSize)
         //convert the data into its SQL readable format
         const {values, createdVals} = sqlForPartialUpdate({...data, ownerUsername:ownerUsername});
         //start by creating the base random encounter table record
@@ -112,22 +120,21 @@ class RandomEncounterTable {
             let encountersUpdate = "";
             for(let encounter of encounters){
                 const {setCols, values} = sqlForPartialUpdate(encounter);
-                let encounterIndex = values.length + 1;
-                let tableIndex = encounterIndex + 1;
+                let tableIndex= values.length + 1;
+                let encounterIndex = tableIndex + 1;
     
                 //start by creating the base random encounter table record
                 const encounterResult = await db.query(
                     `UPDATE table_encounters
                     SET ${setCols}
-                        WHERE table_id = $${tableIndex} AND encounter_id = $${tableIndex}
+                        WHERE table_id = $${tableIndex} AND encounter_id = $${encounterIndex}
                         RETURNING *`,
                     [
                         ...values, 
-                        encounter.tableId, 
+                        id, 
                         encounter.encounterId
                     ],
                 );
-                finalResult.encounters.push(sqlResToJs(encounterResult.rows[0]));
             }
         }
 
@@ -141,7 +148,10 @@ class RandomEncounterTable {
         for(let row of tableEncounterRes.rows){
             finalResult.encounters.push(sqlResToJs(row));
         }
-
+        validateRanges(
+            finalResult.encounters, 
+            finalResult.diceCount,
+            finalResult.diceCount*finalResult.diceSize)
         return finalResult;
     }
 
@@ -153,6 +163,34 @@ class RandomEncounterTable {
     }
 }
 
+/**
+ * Validation function that throws an error if the given encounters have invalid ranges
+ * @param {*} encounterArray JSON array of encounters
+ * @param {*} rangeMin bottom of RET range
+ * @param {*} rangeMax top of RET range
+ */
+function validateRanges(encounterArray,rangeMin, rangeMax){
+    //Sort array, throwing an error if any of the given ranges have identical starts
+    encounterArray.sort((firstE, secondE) =>{
+        if(firstE.rangeStart < secondE.rangeStart)
+            return -1;
+        else if(firstE.rangeStart > secondE.rangeStart)
+            return 1;
+        else throw new BadRequestError("Invalid encounter ranges")
+    });
+    
+    //go through each encounter making sure whole range is covered
+    let currentRangeLocation = rangeMin;
+    for(let encounter of encounterArray){
+        if(encounter.rangeStart != currentRangeLocation)
+            throw new BadRequestError(`Invalid encounter ranges: ${encounter.rangeStart} to ${encounter.rangeEnd}`)
+        if(encounter.rangeEnd>rangeMax)
+            throw new BadRequestError(`Invalid encounter ranges: ${encounter.rangeStart} to ${encounter.rangeEnd}`)
+        currentRangeLocation = encounter.rangeEnd+1;
+    }
+    if(currentRangeLocation != rangeMax+1)
+        throw new BadRequestError("Invalid encounter ranges")
+}
 
 /**
  * Helper function to handle encounter rows in table creation and updating
