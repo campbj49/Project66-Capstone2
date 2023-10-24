@@ -1,0 +1,46 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "properties": {
+      "data":{
+        "type":"object",
+        "properties":{
+            "description": {
+              "type": "string"
+            },
+            "dice": {
+              "type": "string"
+            },
+            "trigger": {
+              "type": "integer"
+            }
+        }
+      },
+      "encounters": {
+        "type": "array",
+        "items": { "$ref": "#/$defs/row" }
+      }
+    },
+    "$defs":{
+      "row":{
+        "type": "object",
+        "required": [
+          "encounterId",
+          "rangeStart",
+          "rangeEnd"
+        ],
+        "properties": {
+          "encounterId": {
+            "type": "integer"
+          },
+          "rangeStart": {
+            "type": "integer"
+          },
+          "rangeEnd": {
+            "type": "integer"
+          }
+        }
+      }
+    }
+  }
+  

@@ -1,6 +1,7 @@
 const express = require("express");
 const jsonschema = require("jsonschema");
 const randomEncounterTableSchema = require("../schemas/randomEncounterTableSchema.json");
+const retUpdateSchema = require("../schemas/retUpdateSchema.json");
 
 const RandomEncounterTable = require("../models/randomEncounterTable");
 const {ExpressError} = require("../expressError");
@@ -67,7 +68,7 @@ router.post("/", async function (req, res, next) {
 router.put("/:id", async function (req, res, next) {
   try {
     //use validation example from API Validation note sheet
-    const result = jsonschema.validate(req.body, randomEncounterTableSchema);
+    const result = jsonschema.validate(req.body, retUpdateSchema);
   
     if (!result.valid) {
       // pass validation errors to error handler

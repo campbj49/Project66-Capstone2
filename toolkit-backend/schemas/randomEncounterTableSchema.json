@@ -6,7 +6,8 @@
       "type":"object",
       "required":[
         "description",
-        "dice"
+        "dice",
+        "trigger"
       ],
       "properties":{
           "description": {

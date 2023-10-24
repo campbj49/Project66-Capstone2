@@ -119,7 +119,6 @@ describe("encounter Routes Test", function () {
         .set({'Authorization':token})
         .send({
             "description":"Orcs in a desert",
-            "statBlockId":1,
             "dice":"1d8+1d12",
         });
       let newencounter = response.body.encounter;
@@ -137,13 +136,13 @@ describe("encounter Routes Test", function () {
         .put(`/encounters/${id}`)
         .set({'Authorization':token})
         .send({
-          "description":"Knight in Shining Armor"
+          "description":100
         });
 
       let error = response.body.error;
       expect(error).toEqual({
         "message": [
-            "instance requires property \"dice\""
+          "instance.description is not of a type(s) string",
         ],
         "status": 400
     });

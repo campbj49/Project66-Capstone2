@@ -4,13 +4,6 @@
     "type": "object",
     "default": {},
     "title": "Root Schema",
-    "required": [
-        "name",
-        "description",
-        "playerName",
-        "passiveWis",
-        "ac"
-    ],
     "properties": {
         "name": {
             "type": "string",

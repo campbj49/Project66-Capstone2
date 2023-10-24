@@ -87,7 +87,6 @@ class RandomEncounterTable {
             let idIndex = values.length + 1;
             let usernameIndex = idIndex + 1;
 
-            console.log(values);
             //start by creating the base random encounter table record
             const tableResult = await db.query(
                 `UPDATE random_encounter_tables
@@ -116,7 +115,6 @@ class RandomEncounterTable {
                 let encounterIndex = values.length + 1;
                 let tableIndex = encounterIndex + 1;
     
-                console.log(values);
                 //start by creating the base random encounter table record
                 const encounterResult = await db.query(
                     `UPDATE table_encounters

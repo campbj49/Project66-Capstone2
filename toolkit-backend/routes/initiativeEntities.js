@@ -1,6 +1,7 @@
 const express = require("express");
 const jsonschema = require("jsonschema");
 const initiativeEntitySchema = require("../schemas/initiativeEntitySchema.json");
+const ieUpdateSchema = require("../schemas/ieUpdateSchema.json")
 
 const InitiativeEntity = require("../models/initiativeEntity");
 const {ExpressError} = require("../expressError");
@@ -64,7 +65,7 @@ router.post("/", async function (req, res, next) {
 router.put("/:id", async function (req, res, next) {
   try {
     //use validation example from API Validation note sheet
-    const result = jsonschema.validate(req.body, initiativeEntitySchema);
+    const result = jsonschema.validate(req.body, ieUpdateSchema);
   
     if (!result.valid) {
       // pass validation errors to error handler

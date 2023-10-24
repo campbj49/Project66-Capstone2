@@ -101,20 +101,20 @@ describe("RandomEncounterTable Routes Test", function () {
           dice:"1d8+1d12",
           ownerUsername: 'testuser',
           trigger:19,
-          encounters:{
-            "0":{
+          encounters:[
+            {
                 encounterId:1,
                 rangeStart:2,
                 rangeEnd:3,
                 tableId: expect.any(Number)
             },
-            "1":{
+            {
                 encounterId:2,
                 rangeStart:4,
                 rangeEnd:5,
                 tableId: expect.any(Number)
             }
-          }
+          ]
         }
       );
     });
@@ -158,9 +158,11 @@ describe("RandomEncounterTable Routes Test", function () {
         .put(`/ret/${id}`)
         .set({'Authorization':token})
         .send({
-            "description":"The low desert",
-            "dice":"1d12",
-        });
+          "data":{
+              "description":"The low desert",
+              "dice":"1d12"
+          }
+      });
       let newRandomEncounterTable = response.body.randomEncounterTable;
       expect(newRandomEncounterTable).toEqual({
         id: expect.any(Number),
@@ -168,20 +170,20 @@ describe("RandomEncounterTable Routes Test", function () {
         dice:"1d12",
         ownerUsername: 'testuser',
         trigger:19,
-        encounters:{
-          "0":{
+        encounters:[
+          {
               encounterId:1,
               rangeStart:2,
               rangeEnd:3,
               tableId: expect.any(Number)
           },
-          "1":{
+          {
               encounterId:2,
               rangeStart:4,
               rangeEnd:5,
               tableId: expect.any(Number)
           }
-        }
+        ]
       });
     });
 
@@ -190,26 +192,16 @@ describe("RandomEncounterTable Routes Test", function () {
         .put(`/ret/${id}`)
         .set({'Authorization':token})
         .send({
-            "description":"The high seas",
-            "trigger":19,
-            "encounters":[
-              {
-                "rangeStart":2,
-                "rangeEnd":3
-              },
-              {
-                "encounterId":2,
-                "rangeStart":4,
-                "rangeEnd":5
-              }
-            ],
-        });
+          "data":{
+              "description":100,
+              "dice":"1d12"
+          }
+      });
 
       let error = response.body.error;
       expect(error).toEqual({
         "message": [
-            "instance.encounters[0] requires property \"encounterId\"",
-            "instance requires property \"data\""
+          "instance.data.description is not of a type(s) string",
         ],
         "status": 400
     });

@@ -130,11 +130,7 @@ describe("InitiativeEntity Routes Test", function () {
         .put(`/ies/${id}`)
         .set({'Authorization':token})
         .send({
-          "name":"Xoomer",
-          "description":"Knight in Shining Armor",
-          "playerName":"ジョン",
-          "passiveWis":9,
-          "ac":25
+          "name":"Xoomer"
         });
       let newInitiativeEntity = response.body.initiativeEntity;
       expect(newInitiativeEntity).toEqual({
@@ -154,7 +150,7 @@ describe("InitiativeEntity Routes Test", function () {
         .put(`/ies/${id}`)
         .set({'Authorization':token})
         .send({
-          "description":"Knight in Shining Armor",
+          "description":100,
           "playerName":"ジョン",
           "passiveWis":9,
           "ac":25
@@ -163,7 +159,7 @@ describe("InitiativeEntity Routes Test", function () {
       let error = response.body.error;
       expect(error).toEqual({
         "message": [
-            "instance requires property \"name\""
+          "instance.description is not of a type(s) string",
         ],
         "status": 400
     });
