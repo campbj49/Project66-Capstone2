@@ -43,7 +43,11 @@ class Encounter {
                 username,
             ],
         );
-        return pcListResults.rows;
+
+        let finalRes = [];
+        for(let row of pcListResults.rows)
+            finalRes.push(sqlResToJs(row))
+        return finalRes;
     }
 
     /**

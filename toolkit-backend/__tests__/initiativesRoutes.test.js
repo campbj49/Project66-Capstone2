@@ -11,7 +11,7 @@ let id;
 describe("Initiative Routes Test", function () {
 
   beforeEach(async function () {
-    await db.query("DELETE FROM initiative");
+    //await db.query("DELETE FROM initiative");
     token = await request(app).post("/auth/token")
       .send({
         "username":"testuser",
@@ -20,15 +20,15 @@ describe("Initiative Routes Test", function () {
 
     token = token.body.token;
     
-    let I1 = await Initiative.create({
-      "name":"Xander",
-      "description":"Knight in Shining Armor",
-      "type": "PC",
-      "playerName":"ジョン",
-      "passiveWis":9,
-      "ac":25
-    }, "testuser");
-    id = I1.id;
+    // let I1 = await Initiative.create({
+    //   "name":"Xander",
+    //   "description":"Knight in Shining Armor",
+    //   "type": "PC",
+    //   "playerName":"ジョン",
+    //   "passiveWis":9,
+    //   "ac":25
+    // }, "testuser");
+    // id = I1.id;
   });
 
   /** GET /initiatives => {list of initiatives} */
@@ -36,11 +36,17 @@ describe("Initiative Routes Test", function () {
   describe("GET /initiatives", function(){
     test("can get initiative list", async function(){
       let response = await request(app)
-        .get("/ies")
+        .get("/initiatives")
         .set({'Authorization':token});
       let initiativeList = response.body.initiatives;
-      expect(initiativeList.length).toEqual(1);
-      expect(initiativeList[0].name).toEqual("Xander");
+      expect(initiativeList.length).toEqual(2);
+      expect(initiativeList[0]).toEqual({
+        
+            id: expect.any(Number),
+            description:"Example encounter",
+            creatureCount:"2"
+        
+      });
     });
   });
 

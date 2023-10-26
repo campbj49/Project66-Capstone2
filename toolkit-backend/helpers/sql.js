@@ -62,6 +62,14 @@ function sqlResToJs(sqlRes, jsToSql = defaultJsToSql){
   return res;
 }
 
+//version of sqlResToJs that works on an array instead of a single row
+function sqlArrToJs(sqlArr){
+  let jsRes = [];
+  for(let row of sqlArr)
+    jsRes.push(sqlResToJs(row));
+  return jsRes;
+}
+
 //jsToSql for the initiativeEntity class, to be used as the default value
 //as it will be the primary class using this function
 const defaultJsToSql = {
@@ -77,8 +85,9 @@ const defaultJsToSql = {
   rangeEnd:"range_end",
   diceSize:"dice_size",
   diceCount:"dice_count",
-  rangeMax:"range_max"
+  rangeMax:"range_max",
+  creatureCount:"creature_count"
   //to be extended as more details are added to the stat block
 }
 
-module.exports = { sqlForPartialUpdate, sqlResToJs };
+module.exports = { sqlForPartialUpdate, sqlResToJs, sqlArrToJs };

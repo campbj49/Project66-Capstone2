@@ -15,7 +15,7 @@ const randomEncounterTableRoutes = require("./routes/randomEncounterTables")
 const authRoutes = require("./routes/auth");
 const usersRoutes = require("./routes/users");
 
-app.use("/initiative", initiativeRoutes);
+app.use("/initiatives", authenticateJWT, ensureLoggedIn, initiativeRoutes);
 app.use("/ies", authenticateJWT, ensureLoggedIn, initiativeEntityRoutes);
 app.use("/encounters", authenticateJWT, ensureLoggedIn, encounterRoutes);
 app.use("/ret", authenticateJWT, ensureLoggedIn, randomEncounterTableRoutes);

@@ -48,7 +48,8 @@ CREATE TABLE initiative(
   encounter_id INT REFERENCES encounters(id) ON DELETE CASCADE,
   PRIMARY KEY (entity_id, encounter_id),
   current_hp INT,
-  is_active BOOLEAN DEFAULT 'FALSE'
+  is_active BOOLEAN DEFAULT 'FALSE',
+  turn_order INT NOT NULL
 );
 
 CREATE TABLE random_encounter_tables(
