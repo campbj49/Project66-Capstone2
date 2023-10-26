@@ -43,6 +43,14 @@ CREATE TABLE encounters(
   dice_modifier INT DEFAULT 0
 );
 
+CREATE TABLE initiative(
+  entity_id INT REFERENCES initiative_entities(id) ON DELETE CASCADE,
+  encounter_id INT REFERENCES encounters(id) ON DELETE CASCADE,
+  PRIMARY KEY (entity_id, encounter_id),
+  current_hp INT,
+  is_active BOOLEAN DEFAULT 'FALSE'
+);
+
 CREATE TABLE random_encounter_tables(
   id SERIAL PRIMARY KEY,
   description TEXT NOT NULL,

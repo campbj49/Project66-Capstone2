@@ -8,12 +8,14 @@ app.use(express.json());
 
 const {ExpressError} = require("./expressError");
 const { ensureLoggedIn, authenticateJWT } = require("./middleware/auth");
+const initiativeRoutes = require("./routes/initiatives");
 const initiativeEntityRoutes = require("./routes/initiativeEntities");
 const encounterRoutes = require("./routes/encounters");
 const randomEncounterTableRoutes = require("./routes/randomEncounterTables")
 const authRoutes = require("./routes/auth");
 const usersRoutes = require("./routes/users");
 
+app.use("/initiative", initiativeRoutes);
 app.use("/ies", authenticateJWT, ensureLoggedIn, initiativeEntityRoutes);
 app.use("/encounters", authenticateJWT, ensureLoggedIn, encounterRoutes);
 app.use("/ret", authenticateJWT, ensureLoggedIn, randomEncounterTableRoutes);
