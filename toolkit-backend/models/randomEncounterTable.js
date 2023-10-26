@@ -114,28 +114,21 @@ class RandomEncounterTable {
             if(!tableResult.rows[0]) return {};
             finalResult = sqlResToJs(tableResult.rows[0]);
         }
+        //throw an error if finaleResult is invalid
+        if(!finalResult.id) throw new BadRequestError("Invalid tableID/username combo");
 
         if(encounters){
-            //construct the chain of update requests to be sent to the database
-            let encountersUpdate = "";
-            for(let encounter of encounters){
-                const {setCols, values} = sqlForPartialUpdate(encounter);
-                let tableIndex= values.length + 1;
-                let encounterIndex = tableIndex + 1;
-    
-                //start by creating the base random encounter table record
-                const encounterResult = await db.query(
-                    `UPDATE table_encounters
-                    SET ${setCols}
-                        WHERE table_id = $${tableIndex} AND encounter_id = $${encounterIndex}
-                        RETURNING *`,
-                    [
-                        ...values, 
-                        id, 
-                        encounter.encounterId
-                    ],
-                );
-            }
+            //validate the recieved encounters
+            validateRanges(
+                encounters, 
+                finalResult.diceCount,
+                finalResult.diceCount*finalResult.diceSize
+            );
+            //with the encounters confirmed, clear the database of the old encounters
+            await db.query(
+                `DELETE FROM table_encounters WHERE table_id =$1`,
+                [id]);
+            await processEncounters(id, encounters);
         }
 
         //collect and process the encounter rows associated with the table, now updated

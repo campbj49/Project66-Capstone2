@@ -7,25 +7,25 @@ process.env.NODE_ENV = "test";
 let token;
 let id;
 const exampleEncounter ={
-    "data":{
-      "description":"The high seas",
-      "diceCount":1,
-      "diceSize":12,
-      "trigger":19,
+  "data":{
+    "description":"The high seas",
+    "diceCount":2,
+    "diceSize":12,
+    "trigger":19
+  },
+  "encounters":[
+    {
+      "encounterId":2,
+      "rangeStart":6,
+      "rangeEnd":24
     },
-    "encounters":[
-      {
-        "encounterId":1,
-        "rangeStart":2,
-        "rangeEnd":3
-      },
-      {
-        "encounterId":2,
-        "rangeStart":4,
-        "rangeEnd":5
-      }
-    ]
-  };
+    {
+      "encounterId":1,
+      "rangeStart":2,
+      "rangeEnd":5
+    }
+  ]
+};
 
 //modified Auth Test Routes from last project to support randomEncounterTable tests
 describe("RandomEncounterTable Routes Test", function () {
@@ -99,27 +99,59 @@ describe("RandomEncounterTable Routes Test", function () {
       expect(newRandomEncounterTable).toEqual({
           id: expect.any(Number),
           description: 'The high seas',
-          diceCount:1,
+          diceCount:2,
           diceSize:12,
           ownerUsername: 'testuser',
           trigger:19,
-          rangeMax: "12",
+          rangeMax: "24",
           encounters:[
             {
                 encounterId:1,
                 rangeStart:2,
-                rangeEnd:3,
+                rangeEnd:5,
                 tableId: expect.any(Number)
             },
             {
                 encounterId:2,
-                rangeStart:4,
-                rangeEnd:5,
+                rangeStart:6,
+                rangeEnd:24,
                 tableId: expect.any(Number)
             }
           ]
         }
       );
+    });
+
+    test("will not allow invalid dice ranges through", async function(){
+      let response = await request(app)
+        .post("/ret")
+        .set({'Authorization':token})
+        .send({
+          "data":{
+            "description":"The high seas",
+            "diceCount":2,
+            "diceSize":12,
+            "trigger":19
+          },
+          "encounters":[
+            {
+              "encounterId":2,
+              "rangeStart":6,
+              "rangeEnd":23
+            },
+            {
+              "encounterId":1,
+              "rangeStart":2,
+              "rangeEnd":5
+            }
+          ]
+        });
+
+      let error = response.body.error;
+      expect(error).toEqual({
+        "message": "Invalid encounter ranges",
+        "status": 400
+    });
     });
 
     test("will throw descriptive errors", async function () {
@@ -163,11 +195,23 @@ describe("RandomEncounterTable Routes Test", function () {
         .send({
           "data":{
               "description":"The low desert",
-              "diceCount":2,
-              "diceSize":6,
-          }
+              "diceSize":6
+          },
+          "encounters":[
+            {
+              "encounterId":1,
+              "rangeStart":2,
+              "rangeEnd":3
+            },
+            {
+              "encounterId":2,
+              "rangeStart":4,
+              "rangeEnd":12
+            }
+          ]
       });
       let newRandomEncounterTable = response.body.randomEncounterTable;
+      console.log(response.body);
       expect(newRandomEncounterTable).toEqual({
         id: expect.any(Number),
         description: 'The low desert',
@@ -186,10 +230,42 @@ describe("RandomEncounterTable Routes Test", function () {
           {
               encounterId:2,
               rangeStart:4,
-              rangeEnd:5,
+              rangeEnd:12,
               tableId: expect.any(Number)
           }
         ]
+      });
+    });
+
+    test("will not allow invalid dice ranges through", async function(){
+        let response = await request(app)
+          .put(`/ret/${id}`)
+          .set({'Authorization':token})
+          .send({
+            "data":{
+              "description":"The high seas",
+              "diceCount":2,
+              "diceSize":12,
+              "trigger":19
+            },
+            "encounters":[
+              {
+                "encounterId":2,
+                "rangeStart":6,
+                "rangeEnd":23
+              },
+              {
+                "encounterId":1,
+                "rangeStart":2,
+                "rangeEnd":5
+              }
+            ]
+          });
+
+        let error = response.body.error;
+        expect(error).toEqual({
+          "message": "Invalid encounter ranges",
+          "status": 400
       });
     });
 
