@@ -57,7 +57,7 @@ function sqlResToJs(sqlRes, jsToSql = defaultJsToSql){
   //put response into a new object
   let res = {}
   for(let key in sqlRes)
-    if(sqlRes[key]) res[sqlToJs[key]||key] = sqlRes[key]
+    if(sqlRes[key] != undefined) res[sqlToJs[key]||key] = sqlRes[key]
   
   return res;
 }
@@ -86,7 +86,13 @@ const defaultJsToSql = {
   diceSize:"dice_size",
   diceCount:"dice_count",
   rangeMax:"range_max",
-  creatureCount:"creature_count"
+  creatureCount:"creature_count",
+  entityId:"entity_id",
+  encounterId:"encounter_id",
+  currentHp:"current_hp",
+  isActive:"is_active",
+  turnOrder:"turn_order",
+  hpMax:"hp_max"
   //to be extended as more details are added to the stat block
 }
 

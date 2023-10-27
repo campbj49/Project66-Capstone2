@@ -1,0 +1,33 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "properties": {
+      "rows": {
+        "type": "array",
+        "items": { "$ref": "#/$defs/row" }
+      }
+    },
+    "$defs":{
+      "row":{
+        "type": "object",
+        "required": [
+          "entityId"
+        ],
+        "properties": {
+          "entityId": {
+            "type": "integer"
+          },
+          "turnOrder": {
+            "type": "integer"
+          },
+          "initMod": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "required": [
+      "rows"
+    ]
+  }
+  

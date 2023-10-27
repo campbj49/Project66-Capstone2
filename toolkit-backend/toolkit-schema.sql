@@ -26,7 +26,8 @@ CREATE TABLE initiative_entities(
   player_name TEXT,
   ac INT,
   passive_wis INT,
-  png TEXT
+  png TEXT,
+  hp_max INT
   --fill out the stat once I have a proper connection to the DnD API
   --will probably need to make actions, attributes, and special abilities all separate mini tables
 );

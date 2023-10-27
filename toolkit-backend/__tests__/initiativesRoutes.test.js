@@ -11,7 +11,7 @@ let id;
 describe("Initiative Routes Test", function () {
 
   beforeEach(async function () {
-    //await db.query("DELETE FROM initiative");
+    await db.query("DELETE FROM initiative");
     token = await request(app).post("/auth/token")
       .send({
         "username":"testuser",
@@ -20,15 +20,24 @@ describe("Initiative Routes Test", function () {
 
     token = token.body.token;
     
-    // let I1 = await Initiative.create({
-    //   "name":"Xander",
-    //   "description":"Knight in Shining Armor",
-    //   "type": "PC",
-    //   "playerName":"ジョン",
-    //   "passiveWis":9,
-    //   "ac":25
-    // }, "testuser");
-    // id = I1.id;
+    await Initiative.rollInitiative(
+      "testuser",
+      1,
+      [
+        {
+            "entityId":1,
+            "turnOrder":14
+        },
+        {
+            "entityId":3,
+            "initMod":5
+        },
+        {
+            "entityId":2,
+            "initMod":1
+        }
+    ]);
+    id = 1;
   });
 
   /** GET /initiatives => {list of initiatives} */
@@ -41,11 +50,9 @@ describe("Initiative Routes Test", function () {
       let initiativeList = response.body.initiatives;
       expect(initiativeList.length).toEqual(2);
       expect(initiativeList[0]).toEqual({
-        
             id: expect.any(Number),
             description:"Example encounter",
             creatureCount:"2"
-        
       });
     });
   });
@@ -55,10 +62,31 @@ describe("Initiative Routes Test", function () {
   describe("GET /initiatives/:id", function(){
     test("can get initiative details", async function(){
       let response = await request(app)
-      .get(`/ies/${id}`)
+      .get(`/initiatives/1`)//${id}`)
       .set({'Authorization':token});
       let initiative = response.body.initiative;
-      expect(initiative.name).toEqual("Xander");
+      expect(initiative).toEqual([
+            {
+                "entityId": 1,
+                "encounterId": 1,
+                "currentHp": 10,
+                "isActive": false,
+                "turnOrder": 14
+            },
+            {
+                "entityId": 3,
+                "encounterId": 1,
+                "currentHp":50,
+                "isActive": false,
+                "turnOrder": expect.any(Number)
+            },
+            {
+                "entityId": 2,
+                "encounterId": 1,
+                "isActive": false,
+                "turnOrder": expect.any(Number)
+            }
+        ]);
     });
     test("will return an empty object if the wrong user attempts to access it", async function(){
       

@@ -1,6 +1,6 @@
 const { user } = require("pg/lib/defaults");
 const db = require("../db");
-const { sqlForPartialUpdate, sqlResToJs } = require("../helpers/sql");
+const { sqlForPartialUpdate, sqlResToJs, sqlArrToJs } = require("../helpers/sql");
 
 
 /** Collection of related methods for player characters */
@@ -43,11 +43,8 @@ class Encounter {
                 username,
             ],
         );
-
-        let finalRes = [];
-        for(let row of pcListResults.rows)
-            finalRes.push(sqlResToJs(row))
-        return finalRes;
+        
+        return sqlArrToJs(pcListResults.rows);
     }
 
     /**
