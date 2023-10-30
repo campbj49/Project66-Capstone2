@@ -52,7 +52,21 @@ class Initiative {
      * and return the completed initiative table
      * list.
     */
-   static async rollInitiative(username, id, rows){
+    static async rollInitiative(username, id, rows){
+        //verify the username has editing access to the encounter
+        const editVerify = await db.query(
+            `SELECT owner_username AS ownerUsername FROM encounters 
+            WHERE id = $1 AND owner_username = $2`,
+            [
+                id,
+                username
+            ]
+        );
+        if(!editVerify.rows[0]) throw new BadRequestError("Invalid user/encounter id combination")
+
+        //clear the initiative table of any rows attatched to the encounter
+        await db.query(`DELETE FROM initiative WHERE encounter_id = $1`, [id]);
+
         //first process the rows into usable initiative records
         let processedRow = [];
         for(let row of rows){
@@ -81,16 +95,108 @@ class Initiative {
         return processedRow;
    }
 
-    /**insertEntity: accepts a single row and adds it to a rolled initiative table identically
-     * to the rolledInitiative method. Returns updated table.
-     */
+    /**kill: remove row from initiative. Returns updated initiative */
+    static async kill(username, id, entityIds){
+        //verify the username has editing access to the encounter
+        const editVerify = await db.query(
+            `SELECT owner_username AS ownerUsername FROM encounters 
+            WHERE id = $1 AND owner_username = $2`,
+            [
+                id,
+                username
+            ]
+        );
+        if(!editVerify.rows[0]) throw new BadRequestError("Invalid user/encounter id combination")
+        for(let entityId of entityIds){
+            await db.query(
+                `DELETE FROM initiative 
+                WHERE entity_id = $1 AND encounter_id = $2`,
+                [
+                    entityId,
+                    id
+                ]
+            )
+        }
+
+        const updatedInitiative = await db.query(
+            `SELECT * FROM initiative WHERE encounter_id = $1`,
+            [id]
+        )
+
+        return sqlArrToJs(updatedInitiative.rows);
+    }
 
     /**damage:  takes an encounterID and an IEID and deals damage to that row of the initiative 
      * table. Throws an error if the target is invalid. Marks the creature as dead if it drops below 1hp
      */
+    static async damage(username, id, data){
+        //verify the username has editing access to the encounter
+        const editVerify = await db.query(
+            `SELECT owner_username AS ownerUsername FROM encounters 
+            WHERE id = $1 AND owner_username = $2`,
+            [
+                id,
+                username
+            ]
+        );
+        if(!editVerify.rows[0]) throw new BadRequestError("Invalid user/encounter id combination")
+        
+        await db.query(
+            `UPDATE initiative
+            SET current_hp = current_hp - $1
+            WHERE entity_id = $2 AND encounter_id = $3`,
+            [
+                data.damage,
+                data.entityId,
+                id
+            ]
+        )
+        
+
+        const updatedInitiative = await db.query(
+            `SELECT * FROM initiative 
+            WHERE encounter_id = $1
+            ORDER BY entity_id ASC`,
+            [id]
+        )
+
+        return sqlArrToJs(updatedInitiative.rows);
+    }
 
     /**exitCombat: clears all initiative rows associated with encounter card Simply returns success message */
+    static async exitCombat(username, id){
+        //verify the username has editing access to the encounter
+        const editVerify = await db.query(
+            `SELECT owner_username AS ownerUsername FROM encounters 
+            WHERE id = $1 AND owner_username = $2`,
+            [
+                id,
+                username
+            ]
+        );
+        if(!editVerify.rows[0]) throw new BadRequestError("Invalid user/encounter id combination");
+
+        //clear the initiative table of any rows attatched to the encounter
+        await db.query(`DELETE FROM initiative WHERE encounter_id = $1`, [id]);
+    }
+
+    /**insertEntity: accepts a single row and adds it to a rolled initiative table identically
+     * to the rolledInitiative method. Returns updated table.
+     */
 }
 
+//helper function for verifying username edit access
+async function verify(username, id){
+    //verify the username has editing access to the encounter
+    const editVerify = await db.query(
+        `SELECT owner_username AS ownerUsername FROM encounters 
+        WHERE id = $1 AND owner_username = $2`,
+        [
+            id,
+            username
+        ]
+    );
+    if(!editVerify.rows[0]) throw new BadRequestError("Invalid user/encounter id combination")
+}
 
 module.exports = Initiative;

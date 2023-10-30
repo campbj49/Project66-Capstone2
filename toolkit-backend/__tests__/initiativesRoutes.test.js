@@ -48,11 +48,11 @@ describe("Initiative Routes Test", function () {
         .get("/initiatives")
         .set({'Authorization':token});
       let initiativeList = response.body.initiatives;
-      expect(initiativeList.length).toEqual(2);
+      expect(initiativeList.length).toEqual(1);
       expect(initiativeList[0]).toEqual({
             id: expect.any(Number),
             description:"Example encounter",
-            creatureCount:"2"
+            creatureCount:"3"
       });
     });
   });
@@ -98,46 +98,69 @@ describe("Initiative Routes Test", function () {
 
       falseToken = falseToken.body.token;
       let response = await request(app)
-      .get(`/ies/${id}`)
+      .get(`/initiatives/1`)
       .set({'Authorization':falseToken});
-      let initiative = response.body.initiative;
-      expect(initiative).toEqual({});
+
+      let error = response.body.error;
+      expect(error).toEqual({
+        "message":"No initiative ID associated with that username.",
+        "status": 400
+    });
     });
   });
 
   /** POST /initiative => initiative Data */
 
-  describe("POST /initiatives", function () {
-    test("can add a new initiative", async function () {
+  describe("POST /initiatives/:encounterId", function () {
+    test("can roll new initiative", async function () {
       let response = await request(app)
-        .post("/ies")
+        .post(`/initiatives/1`)//${id}`)
         .set({'Authorization':token})
         .send({
-          "name":"Xander",
-          "description":"Knight in Shining Armor",
-          "type":"PC",
-          "playerName":"ジョン",
-          "passiveWis":9,
-          "ac":25
-        });
+          "rows":[
+              {
+                  "entityId":1,
+                  "turnOrder":14
+              },
+              {
+                  "entityId":3,
+                  "initMod":5
+              },
+              {
+                  "entityId":2,
+                  "initMod":1
+              }
+          ]
+      });
 
       let newInitiative = response.body.initiative;
-      expect(newInitiative).toEqual({
-          id: expect.any(Number),
-          name: 'Xander',
-          description: 'Knight in Shining Armor',
-          type:"PC",
-          ownerUsername: 'testuser',
-          playerName: 'ジョン',
-          ac: 25,
-          passiveWis: 9
-        }
-      );
+      expect(newInitiative).toEqual([
+            {
+                "entityId": 1,
+                "encounterId": 1,
+                "currentHp": 10,
+                "isActive": false,
+                "turnOrder": 14
+            },
+            {
+                "entityId": 3,
+                "encounterId": 1,
+                "currentHp": 50,
+                "isActive": false,
+                "turnOrder": expect.any(Number)
+            },
+            {
+                "entityId": 2,
+                "encounterId": 1,
+                "isActive": false,
+                "turnOrder": expect.any(Number)
+            }
+        ]);
     });
 
     test("will throw descriptive errors", async function () {
       let response = await request(app)
-        .post("/ies")
+        .post("/initiatives/1")
         .set({'Authorization':token})
         .send({
           "description":"Knight in Shining Armor",
@@ -149,7 +172,7 @@ describe("Initiative Routes Test", function () {
       let error = response.body.error;
       expect(error).toEqual({
         "message": [
-            "instance requires property \"name\""
+            "instance requires property \"rows\""
         ],
         "status": 400
     });
@@ -159,44 +182,62 @@ describe("Initiative Routes Test", function () {
   /** PUT initiatives/:id => {updated initiative} */
 
   describe("PUT /initiatives/:id", function () {
-    test("can update an existing initiative", async function () {
+    test("can damage target entity", async function () {
       let response = await request(app)
-        .put(`/ies/${id}`)
+        .put(`/initiatives/1/dmg`)
         .set({'Authorization':token})
         .send({
-          "name":"Xoomer"
+          "entityId":1,
+          "damage":8
         });
       let newInitiative = response.body.initiative;
-      expect(newInitiative).toEqual({
-        id: expect.any(Number),
-        name: 'Xoomer',
-        description: 'Knight in Shining Armor',
-        type: "PC",
-        ownerUsername: 'testuser',
-        playerName: 'ジョン',
-        ac: 25,
-        passiveWis: 9
-      });
+      expect(newInitiative).toEqual([
+        {
+            "entityId": 1,
+            "encounterId": 1,
+            "currentHp": 2,
+            "isActive": false,
+            "turnOrder": 14
+        },
+        {
+            "entityId": 2,
+            "encounterId": 1,
+            "isActive": false,
+            "turnOrder": expect.any(Number)
+        },
+        {
+            "entityId": 3,
+            "encounterId": 1,
+            "currentHp":50,
+            "isActive": false,
+            "turnOrder": expect.any(Number)
+        }
+    ]);
     });
-
-    test("will throw descriptive errors", async function () {
+    
+    test("can kill target entity", async function () {
       let response = await request(app)
-        .put(`/ies/${id}`)
+        .put(`/initiatives/1/kill`)
         .set({'Authorization':token})
         .send({
-          "description":100,
-          "playerName":"ジョン",
-          "passiveWis":9,
-          "ac":25
+          "entityIds":[1]
         });
-
-      let error = response.body.error;
-      expect(error).toEqual({
-        "message": [
-          "instance.description is not of a type(s) string",
-        ],
-        "status": 400
-    });
+      let newInitiative = response.body.initiative;
+      expect(newInitiative).toEqual([
+        {
+            "entityId": 3,
+            "encounterId": 1,
+            "currentHp":50,
+            "isActive": false,
+            "turnOrder": expect.any(Number)
+        },
+        {
+            "entityId": 2,
+            "encounterId": 1,
+            "isActive": false,
+            "turnOrder": expect.any(Number)
+        }
+    ]);
     });
   });
 
@@ -205,10 +246,10 @@ describe("Initiative Routes Test", function () {
   describe("DELETE /initiatives/:id", function(){
     test("can delete initiative", async function(){
       let response = await request(app)
-        .delete(`/ies/${id}`)
+        .delete(`/initiatives/1`)
         .set({'Authorization':token});
       let message = response.body.message;
-      expect(message).toEqual("Initiative deleted");
+      expect(message).toEqual("Initiative Cleared");
     });
   });
 });

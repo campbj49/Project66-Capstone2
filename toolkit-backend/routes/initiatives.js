@@ -33,7 +33,7 @@ router.get("/:id", async function (req, res, next) {
   }
 });
 
-//POST /: accepts array, returns initiative tabe object
+//POST /: accepts array, returns initiative table object
 router.post("/:id", async function (req, res, next) {
   try {
     //use validation example from API Validation note sheet
@@ -57,8 +57,41 @@ router.post("/:id", async function (req, res, next) {
     return next(err);
   }
 });
-//POST /kill/:id :removes id from initiative table
-//POST /dmg/:id :subtracts passed damage qty from id's hp pool, returns updated value
 
+//PUT :id/kill :removes id from initiative table
+router.put("/:id/kill", async function (req, res, next) {
+  try {
+    const initiative = await Initiative.kill(
+      res.locals.user.username, 
+      req.params.id,
+      req.body.entityIds);
+    return res.status(201).json({ initiative });
+  } catch (err) {
+    return next(err);
+  }
+} );
+
+//PUT :id/dmg :subtracts passed damage qty from id's hp pool, returns updated value
+router.put("/:id/dmg", async function (req, res, next) {
+  try {
+    const initiative = await Initiative.damage(
+      res.locals.user.username, 
+      req.params.id,
+      req.body);
+    return res.status(201).json({ initiative });
+  } catch (err) {
+    return next(err);
+  }
+} );
+
+//DELETE /:id :clears rows of encounter specified
+router.delete("/:id", async function (req, res, next) {
+  try {
+    await Initiative.exitCombat(res.locals.user.username, req.params.id);
+    return res.json({ message: "Initiative Cleared" });
+  } catch (err) {
+    return next(err);
+  }
+});
 
 module.exports = router;
