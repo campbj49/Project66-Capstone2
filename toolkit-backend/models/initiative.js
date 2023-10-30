@@ -143,7 +143,7 @@ class Initiative {
             [id]
         )
 
-        return sqlArrToJs(updatedInitiative.rows);
+        return this.rollInitiative(username, id, sqlArrToJs(updatedInitiative.rows));
     }
 
     /**damage:  takes an encounterID and an IEID and deals damage to that row of the initiative 

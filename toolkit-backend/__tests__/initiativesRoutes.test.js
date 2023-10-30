@@ -260,7 +260,7 @@ describe("Initiative Routes Test", function () {
             "entityId": 3,
             "encounterId": 1,
             "currentHp":50,
-            "isActive": false,
+            "isActive": true,
             "turnOrder": expect.any(Number),
             "nextEntity": 2
         },
