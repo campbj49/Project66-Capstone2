@@ -50,7 +50,8 @@ CREATE TABLE initiative(
   PRIMARY KEY (entity_id, encounter_id),
   current_hp INT,
   is_active BOOLEAN DEFAULT 'FALSE',
-  turn_order INT NOT NULL
+  turn_order INT NOT NULL,
+  next_entity INT REFERENCES initiative_entities(id)
 );
 
 CREATE TABLE random_encounter_tables(
@@ -73,14 +74,6 @@ CREATE TABLE table_encounters(
   PRIMARY KEY (table_id, encounter_id),
   range_start INT NOT NULL,
   range_end INT NOT NULL CHECK (range_end>=range_start)
-);
-
-CREATE TABLE initiative_rows(
-  table_id INT REFERENCES random_encounter_tables(id) ON DELETE CASCADE,
-  entity_id INT REFERENCES initiative_entities(id) ON DELETE CASCADE,
-  PRIMARY KEY (table_id, entity_id),
-  count INT DEFAULT 1,
-  initiative INT NOT NULL
 );
 
 -- CREATE TABLE weather_tables(

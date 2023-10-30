@@ -92,7 +92,8 @@ const defaultJsToSql = {
   currentHp:"current_hp",
   isActive:"is_active",
   turnOrder:"turn_order",
-  hpMax:"hp_max"
+  hpMax:"hp_max",
+  nextEntity:"next_entity"
   //to be extended as more details are added to the stat block
 }
 

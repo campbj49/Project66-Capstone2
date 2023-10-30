@@ -30,11 +30,11 @@ describe("Initiative Routes Test", function () {
         },
         {
             "entityId":3,
-            "initMod":5
+            "turnOrder":5
         },
         {
             "entityId":2,
-            "initMod":1
+            "turnOrder":1
         }
     ]);
     id = 1;
@@ -70,21 +70,24 @@ describe("Initiative Routes Test", function () {
                 "entityId": 1,
                 "encounterId": 1,
                 "currentHp": 10,
-                "isActive": false,
-                "turnOrder": 14
+                "isActive": true,
+                "turnOrder": 14,
+                "nextEntity":3
             },
             {
                 "entityId": 3,
                 "encounterId": 1,
                 "currentHp":50,
                 "isActive": false,
-                "turnOrder": expect.any(Number)
+                "turnOrder": expect.any(Number),
+                "nextEntity":2
             },
             {
                 "entityId": 2,
                 "encounterId": 1,
                 "isActive": false,
-                "turnOrder": expect.any(Number)
+                "turnOrder": expect.any(Number),
+                "nextEntity":1
             }
         ]);
     });
@@ -109,8 +112,31 @@ describe("Initiative Routes Test", function () {
     });
   });
 
-  /** POST /initiative => initiative Data */
+  /** GET /initiatives/:id/next => nextEntityCard */
 
+  describe("GET /initiatives/:id/next", function(){
+    test("can get next creature cards details in a loop", async function(){
+      let response = await request(app)
+      .get(`/initiatives/1/next`)
+      .set({'Authorization':token});
+      let entity = response.body.entity;
+      expect(entity.name).toEqual("testMonster");
+
+      response = await request(app)
+      .get(`/initiatives/1/next`)
+      .set({'Authorization':token});
+      entity = response.body.entity;
+      expect(entity.name).toEqual("testPC");
+
+      response = await request(app)
+      .get(`/initiatives/1/next`)
+      .set({'Authorization':token});
+      entity = response.body.entity;
+      expect(entity.name).toEqual("testNPC");
+    });
+  });
+
+  /** POST /initiative => initiative Data */
   describe("POST /initiatives/:encounterId", function () {
     test("can roll new initiative", async function () {
       let response = await request(app)
@@ -124,11 +150,11 @@ describe("Initiative Routes Test", function () {
               },
               {
                   "entityId":3,
-                  "initMod":5
+                  "turnOrder":5
               },
               {
                   "entityId":2,
-                  "initMod":1
+                  "turnOrder":1
               }
           ]
       });
@@ -139,21 +165,24 @@ describe("Initiative Routes Test", function () {
                 "entityId": 1,
                 "encounterId": 1,
                 "currentHp": 10,
-                "isActive": false,
-                "turnOrder": 14
+                "isActive": true,
+                "turnOrder": 14,
+                "nextEntity":3
             },
             {
                 "entityId": 3,
                 "encounterId": 1,
                 "currentHp": 50,
                 "isActive": false,
-                "turnOrder": expect.any(Number)
+                "turnOrder": 5,
+                "nextEntity":2
             },
             {
                 "entityId": 2,
                 "encounterId": 1,
                 "isActive": false,
-                "turnOrder": expect.any(Number)
+                "turnOrder": 1,
+                "nextEntity":1
             }
         ]);
     });
@@ -196,21 +225,24 @@ describe("Initiative Routes Test", function () {
             "entityId": 1,
             "encounterId": 1,
             "currentHp": 2,
-            "isActive": false,
-            "turnOrder": 14
-        },
-        {
-            "entityId": 2,
-            "encounterId": 1,
-            "isActive": false,
-            "turnOrder": expect.any(Number)
+            "isActive": true,
+            "turnOrder": 14,
+            "nextEntity": 3
         },
         {
             "entityId": 3,
             "encounterId": 1,
             "currentHp":50,
             "isActive": false,
-            "turnOrder": expect.any(Number)
+            "turnOrder": expect.any(Number),
+            "nextEntity":2
+        },
+        {
+            "entityId": 2,
+            "encounterId": 1,
+            "isActive": false,
+            "turnOrder": expect.any(Number),
+            "nextEntity":1
         }
     ]);
     });
@@ -229,13 +261,15 @@ describe("Initiative Routes Test", function () {
             "encounterId": 1,
             "currentHp":50,
             "isActive": false,
-            "turnOrder": expect.any(Number)
+            "turnOrder": expect.any(Number),
+            "nextEntity": 2
         },
         {
             "entityId": 2,
             "encounterId": 1,
             "isActive": false,
-            "turnOrder": expect.any(Number)
+            "turnOrder": expect.any(Number),
+            "nextEntity":3
         }
     ]);
     });

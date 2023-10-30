@@ -25,14 +25,11 @@ VALUES  ('Example encounter', 'testuser', 'testuser', 3, 1,4),
 INSERT INTO random_encounter_tables (description, owner_username, created_by, dice_count, dice_size, trigger)
 VALUES ('Example table', 'testuser', 'testuser', 2,6, 18);
 
-INSERT INTO initiative (encounter_id, entity_id, current_hp, turn_order)
-VALUES  (1,1,10,5),
-        (1,2,NULL,17),
-        (2,3,30,23),
-        (2,2,NULL,9);
+INSERT INTO initiative (encounter_id, entity_id, current_hp, turn_order, next_entity)
+VALUES  (1,1,10,5,2),
+        (1,2,NULL,17,1),
+        (2,3,30,23,2),
+        (2,2,NULL,9,3);
 
 INSERT INTO table_encounters (table_id, encounter_id, range_start, range_end)
 VALUES (1,1,5,10);
-
-INSERT INTO initiative_rows (table_id, entity_id, count, initiative)
-VALUES (1,1,1,14),(1,2,2,17), (1,3,3,20);

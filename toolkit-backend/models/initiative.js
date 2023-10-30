@@ -67,26 +67,46 @@ class Initiative {
         //clear the initiative table of any rows attatched to the encounter
         await db.query(`DELETE FROM initiative WHERE encounter_id = $1`, [id]);
 
-        //first process the rows into usable initiative records
+        //fill out turn order values
+        for(let row of rows)
+            if(!row.turnOrder) row.turnOrder = rollDice(20) + row.initMod || 0;
+        //sort by turn order and mark the first as active
+        rows.sort((firstE, secondE) =>{
+            if(firstE.turnOrder <= secondE.turnOrder)
+                return 1;
+            else if(firstE.turnOrder > secondE.turnOrder)
+                return -1;
+        });
+        rows[0].isActive = true;
+
+        //process the rows into usable initiative records
         let processedRow = [];
-        for(let row of rows){
+        for(let [index, row] of rows.entries()){
             //eventually will be able to pull the initMod directly from the card
             let entityCard = await db.query(
                 `SELECT * FROM initiative_entities WHERE id = $1`,
                 [row.entityId]
             );
             entityCard = sqlResToJs(entityCard.rows[0]);
-            
-            if(!row.turnOrder) row.turnOrder = rollDice(20) + row.initMod || 0;
+
             const result = await db.query(
-                `INSERT INTO initiative (encounter_id, entity_id, current_hp, turn_order)
-                VALUES($1, $2, $3, $4)
+                `INSERT INTO initiative (
+                    encounter_id, 
+                    entity_id, 
+                    current_hp, 
+                    turn_order,
+                    is_active,
+                    next_entity
+                )
+                VALUES($1, $2, $3, $4, $5, $6)
                 RETURNING *`,
                 [
                     id,
                     row.entityId,
-                    entityCard.hpMax,//hpmax to be pulled from entity card later
-                    row.turnOrder
+                    entityCard.hpMax,
+                    row.turnOrder,
+                    row.isActive || false,
+                    rows[(index+1)%rows.length].entityId
                 ]
             );
             processedRow.push(sqlResToJs(result.rows[0]));
@@ -156,7 +176,7 @@ class Initiative {
         const updatedInitiative = await db.query(
             `SELECT * FROM initiative 
             WHERE encounter_id = $1
-            ORDER BY entity_id ASC`,
+            ORDER BY turn_order DESC`,
             [id]
         )
 
@@ -180,23 +200,58 @@ class Initiative {
         await db.query(`DELETE FROM initiative WHERE encounter_id = $1`, [id]);
     }
 
-    /**insertEntity: accepts a single row and adds it to a rolled initiative table identically
-     * to the rolledInitiative method. Returns updated table.
+    /**nextEntity: increments the given encounter's initiative count and returns the creature
+     * card of the active inititive_entity
      */
-}
+    static async nextEntity(username, id){
+        //verify the username has editing access to the encounter
+        const editVerify = await db.query(
+            `SELECT owner_username AS ownerUsername FROM encounters 
+            WHERE id = $1 AND owner_username = $2`,
+            [
+                id,
+                username
+            ]
+        );
+        if(!editVerify.rows[0]) throw new BadRequestError("Invalid user/encounter id combination");
 
-//helper function for verifying username edit access
-async function verify(username, id){
-    //verify the username has editing access to the encounter
-    const editVerify = await db.query(
-        `SELECT owner_username AS ownerUsername FROM encounters 
-        WHERE id = $1 AND owner_username = $2`,
-        [
-            id,
-            username
-        ]
-    );
-    if(!editVerify.rows[0]) throw new BadRequestError("Invalid user/encounter id combination")
+        //pull the active row from initiative
+        const activeCreature = await db.query(
+            `SELECT entity_id AS entityId, next_entity AS nextEntity
+            FROM initiative
+            WHERE encounter_id = $1 AND is_active ='TRUE'`,
+            [
+                id
+            ]
+        );
+        if(!activeCreature.rows[0]) throw new BadRequestError("No active creature");
+        let [oldId, newId] = [activeCreature.rows[0].entityid, activeCreature.rows[0].nextentity]
+
+        //update the active values in the rows
+        await db.query(
+            `UPDATE initiative SET is_active = NOT is_active
+            WHERE (entity_id = $1 OR entity_id = $2) AND (encounter_id = $3)`,
+            [
+                oldId,
+                newId,
+                id
+            ]
+        )
+
+        //pull the creature card data
+        const creatureCard = await db.query(
+            `SELECT * FROM initiative_entities WHERE id = $1`,
+            [
+                newId
+            ]
+        )
+        return sqlResToJs(creatureCard.rows[0]);
+    }
+
+    /**insertEntity: accepts a single row and adds it to a rolled initiative table identically
+     * to the rolledInitiative method. Returns updated table. Will probably just stick with 
+     * re-running rollInitiative
+     */
 }
 
 module.exports = Initiative;

@@ -12,7 +12,6 @@ const router = new express.Router();
 /** GET / => {initiatives: [initiative, ...]} 
  * returns the list of initiatives associated with a user
  */
-
 router.get("/", async function (req, res, next) {
   try {
     const initiatives = await Initiative.findAll(res.locals.user.username);
@@ -22,12 +21,21 @@ router.get("/", async function (req, res, next) {
   }
 });
 
-//GET /: retrievs current user's initiative table
-
+//GET /:id retrievs current user's initiative table
 router.get("/:id", async function (req, res, next) {
   try {
     const initiative = await Initiative.findOne(res.locals.user.username, req.params.id);
     return res.json({ initiative });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+//GET /:id/next retrieves character card for next active entity
+router.get("/:id/next", async function (req, res, next) {
+  try {
+    const entity = await Initiative.nextEntity(res.locals.user.username, req.params.id);
+    return res.json({ entity });
   } catch (err) {
     return next(err);
   }
