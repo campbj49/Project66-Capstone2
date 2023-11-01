@@ -10,8 +10,8 @@ const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:3001";
  *
  */
 
-class JoblyApi {
-  // the token for interactive with the API will be stored here.
+class ToolkitApi {
+  // the token for interacting with the API will be stored here.
   static token;
 
   static async request(endpoint, data = {}, method = "get") {
@@ -20,7 +20,7 @@ class JoblyApi {
     //there are multiple ways to pass an authorization token, this is how you pass it in the header.
     //this has been provided to show you another way to pass the token. you are only expected to read this code for this project.
     const url = `${BASE_URL}/${endpoint}`;
-    const headers = { Authorization: `Bearer ${JoblyApi.token}` };
+    const headers = { Authorization: `Bearer ${ToolkitApi.token}` };
     const params = (method === "get")
         ? data
         : {};
@@ -29,37 +29,26 @@ class JoblyApi {
       return (await axios({ url, method, data, params, headers })).data;
     } catch (err) {
       console.error("API Error:", err.response);
+      
       let message = err.response.data.error.message;
       throw Array.isArray(message) ? message : [message];
     }
   }
 
   // Individual API routes
+  
+  /**TODO: Get list of user's initiative entities */
 
-  /** Get all of a list */
+  /**TODO: Get list of user's encounters */
 
-  static async getList(type, data={}) {
-    let res = await this.request(type, data);
-    return res[type];
-  }
+  /**TODO: Get list of user's random encounter tables */
 
-  /** Get details on a company by handle. */
-
-  static async getCompany(handle) {
-    let res = await this.request(`companies/${handle}`);
-    return res.company;
-  }
-
-  /** Get details on a job by handle. */
-
-  static async getJob(id) {
-    let res = await this.request(`jobs/${id}`);
-    return res.job;
-  }
+  /**TODO: Get user's quick initiative */
 
   //manage authorization
 
   static async login(username, password){
+    console.log("this is being run")
     let res = await this.request("auth/token",{username:username, password:password}, "post" );
     return res.token;
   }
@@ -89,17 +78,11 @@ class JoblyApi {
     console.log(res);
     return res.user;
   }
-
-  //apply current user to a job
-  static async apply(username, jobId){
-    let res = await this.request(`users/${username}/jobs/${jobId}`, {}, "post")
-    return res.applied;
-  }
 }
 
 // for now, put token ("testuser" / "password" on class)
-JoblyApi.token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZ" +
+ToolkitApi.token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZ" +
     "SI6InRlc3R1c2VyIiwiaXNBZG1pbiI6ZmFsc2UsImlhdCI6MTU5ODE1OTI1OX0." +
     "FtrMwBQwe6Ue-glIFgz_Nf8XxRT2YecFCiSpYL0fCXc";
 
-export default JoblyApi;
+export default ToolkitApi;

@@ -1,6 +1,6 @@
 import { useState } from "react";
 /**
- * SignupForm: Creates and handles the form for collecting the madLib words
+ * SignupForm: Creates and handles the form for collecting the information needed to register a user
  * 
  * Props: 
  * -onSubmit: function for passing the form data up to the parent

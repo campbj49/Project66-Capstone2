@@ -1,6 +1,6 @@
 import { useState } from "react";
 /**
- * LoginForm: Creates and handles the form for collecting the madLib words
+ * LoginForm: Creates and handles the form for getting a user into the website itself
  * 
  * Props: 
  * -onSubmit: function for passing the form data up to the parent
@@ -9,7 +9,7 @@ import { useState } from "react";
  * States:
  * -message: current value typed into the form
  * 
- * App --> ItemList --> LoginForm
+ * App --> LoginForm
  */
 
 function LoginForm({onSubmit, setFormData, formVisible}){

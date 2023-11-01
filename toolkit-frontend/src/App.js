@@ -7,7 +7,7 @@ import { Route, Switch } from "react-router-dom";
 import List from "./List";
 import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm.js";
-import JoblyApi from "./api";
+import ToolkitApi from "./api";
 import { createBrowserHistory } from 'history';
 import useLocalStorage from "./useLocalStorage";
 
@@ -23,8 +23,8 @@ function App() {
   useEffect(()=>{
     async function updateUser(){
       if(!(username === "undefined" || !username)){
-        JoblyApi.token = token;
-        await setUser(await JoblyApi.getUser(username))
+        ToolkitApi.token = token;
+        await setUser(await ToolkitApi.getUser(username))
       }
     }
     updateUser();
@@ -34,18 +34,18 @@ function App() {
   async function onSubmit(evt){
     evt.preventDefault();
     try{
-      if(!formData.username) setUser(await JoblyApi.updateUser(username,formData))
+      if(!formData.username) setUser(await ToolkitApi.updateUser(username,formData))
       else{
         setToken();
         await setUsername(formData.username);
         console.log(username);
         console.log(formData.username);
         if(formData.email)
-          await setToken(await JoblyApi.signup(formData));
+          await setToken(await ToolkitApi.signup(formData));
         else
-          await setToken(await JoblyApi.login(formData.username, formData.password));
-        JoblyApi.token = await JoblyApi.login(formData.username, formData.password);
-        setUser(await JoblyApi.getUser(formData.username))
+          await setToken(await ToolkitApi.login(formData.username, formData.password));
+        ToolkitApi.token = await ToolkitApi.login(formData.username, formData.password);
+        setUser(await ToolkitApi.getUser(formData.username))
       }
       setError();
     }
@@ -99,7 +99,7 @@ function Logout({setToken, history, setUser, setUsername}){
   setToken();
   setUser();
   setUsername();
-  JoblyApi.token = undefined;
+  ToolkitApi.token = undefined;
   history.push("/");
 }
 
