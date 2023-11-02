@@ -20,16 +20,17 @@ class ToolkitApi {
     //there are multiple ways to pass an authorization token, this is how you pass it in the header.
     //this has been provided to show you another way to pass the token. you are only expected to read this code for this project.
     const url = `${BASE_URL}/${endpoint}`;
-    const headers = { Authorization: `Bearer ${ToolkitApi.token}` };
+    const headers = { Authorization: `${ToolkitApi.token}` };
     const params = (method === "get")
         ? data
         : {};
 
     try {
-      //const response = await axios({ url, method, data, params, headers });
-      return (await axios({ url, method, data, params, headers })).data;
+      const response = await axios({ url, method, data, params, headers });
+      console.log(response);
+      return response.data;//(await axios({ url, method, data, params, headers })).data;
     } catch (err) {
-      console.error("API Error:", err.response);
+      console.error("API Error:", err.response || err.message);
 
       let message = err.response.data.error.message;
       throw Array.isArray(message) ? message : [message];
@@ -80,8 +81,8 @@ class ToolkitApi {
 }
 
 // for now, put token ("testuser" / "password" on class)
-ToolkitApi.token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZ" +
-    "SI6InRlc3R1c2VyIiwiaXNBZG1pbiI6ZmFsc2UsImlhdCI6MTU5ODE1OTI1OX0." +
-    "FtrMwBQwe6Ue-glIFgz_Nf8XxRT2YecFCiSpYL0fCXc";
+// ToolkitApi.token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+// eyJ1c2VybmFtZSI6InRlc3R1c2VyIiwiaXNBZG1pbiI6ZmFsc2UsImlhdCI6MTY5ODQxOTU4Nn0
+// yqZc1Yf5ssX3cCYpimXaNEPRjmdqs44VJKk5XishFXI`;
 
 export default ToolkitApi;

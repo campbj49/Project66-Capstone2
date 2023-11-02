@@ -1,11 +1,5 @@
 /** Express app for Dungeon Master toolkit. */
 
-
-const express = require("express");
-const app = express();
-
-app.use(express.json());
-
 const {ExpressError} = require("./expressError");
 const { ensureLoggedIn, authenticateJWT } = require("./middleware/auth");
 const initiativeRoutes = require("./routes/initiatives");
@@ -15,10 +9,19 @@ const randomEncounterTableRoutes = require("./routes/randomEncounterTables")
 const authRoutes = require("./routes/auth");
 const usersRoutes = require("./routes/users");
 
-app.use("/initiatives", authenticateJWT, ensureLoggedIn, initiativeRoutes);
-app.use("/ies", authenticateJWT, ensureLoggedIn, initiativeEntityRoutes);
-app.use("/encounters", authenticateJWT, ensureLoggedIn, encounterRoutes);
-app.use("/ret", authenticateJWT, ensureLoggedIn, randomEncounterTableRoutes);
+
+const express = require("express");
+const app = express();
+const cors = require("cors");
+
+app.use(express.json());
+app.use(cors());
+
+app.use(authenticateJWT);
+app.use("/initiatives", ensureLoggedIn, initiativeRoutes);
+app.use("/ies", ensureLoggedIn, initiativeEntityRoutes);
+app.use("/encounters", ensureLoggedIn, encounterRoutes);
+app.use("/ret", ensureLoggedIn, randomEncounterTableRoutes);
 app.use("/auth", authRoutes);
 app.use("/users", usersRoutes);
 
