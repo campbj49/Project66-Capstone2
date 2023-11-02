@@ -12,7 +12,6 @@ import { createBrowserHistory } from 'history';
 import useLocalStorage from "./useLocalStorage";
 
 function App() {
-  const [formData, setFormData] = useState({});
   const [token, setToken] = useLocalStorage("token");
   const [username, setUsername] = useLocalStorage("username");
   const [user, setUser] = useState({});
@@ -22,41 +21,42 @@ function App() {
   //keep user information up to date by loading the data fresh every time
   useEffect(()=>{
     async function updateUser(){
+      console.log(username);
       if(!(username === "undefined" || !username)){
         ToolkitApi.token = token;
         await setUser(await ToolkitApi.getUser(username))
       }
     }
     updateUser();
-  },[])
+   },[])
 
-  //function for manaing the submission login and registration form
-  async function onSubmit(evt){
-    evt.preventDefault();
-    try{
-      if(!formData.username) setUser(await ToolkitApi.updateUser(username,formData))
-      else{
-        setToken();
-        await setUsername(formData.username);
-        console.log(username);
-        console.log(formData.username);
-        if(formData.email)
-          await setToken(await ToolkitApi.signup(formData));
-        else
-          await setToken(await ToolkitApi.login(formData.username, formData.password));
-        ToolkitApi.token = await ToolkitApi.login(formData.username, formData.password);
-        setUser(await ToolkitApi.getUser(formData.username))
-      }
-      setError();
-    }
-    catch(err){
-      console.log(err);
-      setError("Invalid username or password")
-    }
+  // //function for manaing the submission login and registration form
+  // async function onSubmit(evt){
+  //   evt.preventDefault();
+  //   try{
+  //     if(!formData.username) setUser(await ToolkitApi.updateUser(username,formData))
+  //     else{
+  //       setToken();
+  //       await setUsername(formData.username);
+  //       console.log(username);
+  //       console.log(formData.username);
+  //       if(formData.email)
+  //         await setToken(await ToolkitApi.signup(formData));
+  //       else
+  //         await setToken(await ToolkitApi.login(formData.username, formData.password));
+  //       ToolkitApi.token = await ToolkitApi.login(formData.username, formData.password);
+  //       setUser(await ToolkitApi.getUser(formData.username))
+  //     }
+  //     setError();
+  //   }
+  //   catch(err){
+  //     console.log(err);
+  //     setError("Invalid username or password")
+  //   }
     
-    setFormData({});
-    browserHistory.push(`/`);
-  }
+  //   setFormData({});
+  //   browserHistory.push(`/`);
+  // }
 
   return (
     <div className="App">
@@ -74,12 +74,16 @@ function App() {
                       setUsername={setUsername}/>
             </Route>
             <Route path="/login">
-            <LoginForm onSubmit={onSubmit} 
-                    setFormData={setFormData}/>
+            <LoginForm setToken={setToken} 
+                    setError={setError}
+                    setUsername={setUsername}
+                    setUser={setUser}/>
             </Route>
             <Route path="/signup">
-            <SignupForm onSubmit={onSubmit} 
-                    setFormData={setFormData}/>
+            <SignupForm setToken={setToken} 
+                    setError={setError}
+                    setUsername={setUsername}
+                    setUser={setUser}/>
             </Route>
             <Route exact path="/:base" token={token}>
               <List token={token}/>

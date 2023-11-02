@@ -26,10 +26,11 @@ class ToolkitApi {
         : {};
 
     try {
+      //const response = await axios({ url, method, data, params, headers });
       return (await axios({ url, method, data, params, headers })).data;
     } catch (err) {
       console.error("API Error:", err.response);
-      
+
       let message = err.response.data.error.message;
       throw Array.isArray(message) ? message : [message];
     }
@@ -48,7 +49,6 @@ class ToolkitApi {
   //manage authorization
 
   static async login(username, password){
-    console.log("this is being run")
     let res = await this.request("auth/token",{username:username, password:password}, "post" );
     return res.token;
   }
@@ -75,7 +75,6 @@ class ToolkitApi {
 
   static async updateUser(username, data){
     let res = await this.request(`users/${username}`, data, "patch");
-    console.log(res);
     return res.user;
   }
 }
