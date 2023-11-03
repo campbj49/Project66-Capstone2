@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Router as BrowserRouter } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 import "./App.css";
 import Home from "./Home";
 import NavBar from "./NavBar";
@@ -8,39 +8,34 @@ import List from "./List";
 import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm.js";
 import ToolkitApi from "./api";
-import { createBrowserHistory } from 'history';
 import useLocalStorage from "./useLocalStorage";
 import { Redirect } from "react-router-dom/cjs/react-router-dom.min";
 
 function App() {
   const [user, setUser] = useState({});
   const [error, setError] = useState();
-  const browserHistory = createBrowserHistory();
-  const history = useHistory();
-  console.log(browserHistory);
 
   return (
     <div className="App">
-      <BrowserRouter history={browserHistory}>
-        <NavBar error = {error}/>
+      <BrowserRouter>
+        <NavBar error = {error} user = {user}/>
         <main>
           <Switch>
             <Route exact path="/">
               <Home token={user.token}/>
             </Route>
             <Route path="/logout">
-              <Logout browserHistory={browserHistory} 
-                      history={history}
-                      setUser={setUser}/>
+              <Logout setUser={setUser}/>
             </Route>
             <Route path="/login">
             <LoginForm setError={setError}
                     setUser={setUser}
-                    browserHistory={browserHistory} />
+                    user = {user} />
             </Route>
             <Route path="/signup">
             <SignupForm setError={setError}
-                    setUser={setUser}/>
+                    setUser={setUser}
+                    user = {user}/>
             </Route>
             <Route>
               <p>Hmmm. I can't seem to find what you want.</p>
@@ -53,11 +48,15 @@ function App() {
 }
 
 //mini component for logging out
-function Logout({browserHistory, setUser, history}){
-  //setUser({});
-  //ToolkitApi.token = undefined;
-  //history.push("/");
-  return <Redirect to="/"/>
+function Logout({setUser}){
+
+  //wrap information clear in effect to prevent infinite loop
+  useEffect(()=>{
+    console.log("The variables have been cleared")
+    setUser({});
+    ToolkitApi.token = undefined;
+  },[])
+  return <Redirect to="/"/>;
 }
 
 export default App;

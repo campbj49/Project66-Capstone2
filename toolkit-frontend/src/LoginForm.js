@@ -1,5 +1,6 @@
 import { useState } from "react";
 import ToolkitApi from "./api";
+import { Redirect } from "react-router-dom/cjs/react-router-dom.min";
 /**
  * LoginForm: Creates and handles the form for getting a user into the website itself
  * 
@@ -13,8 +14,9 @@ import ToolkitApi from "./api";
  * App --> LoginForm
  */
 
-function LoginForm({setUser, setError, formVisible, browserHistory}){
+function LoginForm({setUser, setError, user}){
     const [formData, setFormData] = useState({});
+    if(user.token) return <Redirect to="/"/>;
     //keeps input val props up to date
     const handleChange = evt => {
         const [ name, value ] = [evt.target.name, evt.target.value];
@@ -36,7 +38,6 @@ function LoginForm({setUser, setError, formVisible, browserHistory}){
             ToolkitApi.token = token;
             setError();
             setFormData({});
-            browserHistory.push(`/`);
         }
         catch(err){
             console.log(err);
@@ -46,7 +47,7 @@ function LoginForm({setUser, setError, formVisible, browserHistory}){
     }
 
     return(
-        <form onSubmit={onSubmit} style={formVisible}>
+        <form onSubmit={onSubmit}>
             <label htmlFor="username">Username</label>
             <input required type="text" name="username" onChange={handleChange}></input><br/>
             <label htmlFor="password">Password</label>

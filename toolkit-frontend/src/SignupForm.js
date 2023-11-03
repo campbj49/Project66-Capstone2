@@ -1,5 +1,6 @@
 import { useState } from "react";
 import ToolkitApi from "./api";
+import { Redirect } from "react-router-dom/cjs/react-router-dom.min";
 /**
  * SignupForm: Creates and handles the form for collecting the information needed to register a user
  * 
@@ -13,8 +14,9 @@ import ToolkitApi from "./api";
  * App --> ItemList --> SignupForm
  */
 
-function SignupForm({setToken,setError, setUsername, setUser, formVisible}){
+function SignupForm({setUser, setError, user}){
     const [formData, setFormData] = useState({});
+    if(user.token) return <Redirect to="/"/>;
     //keeps input val props up to date
     const handleChange = evt => {
         const [ name, value ] = [evt.target.name, evt.target.value];
@@ -28,12 +30,14 @@ function SignupForm({setToken,setError, setUsername, setUser, formVisible}){
     async function onSubmit(evt){
       evt.preventDefault();
       try{
-        setToken();
-        await setUsername(formData.username);
-        await setToken(await ToolkitApi.signup(formData));
-        ToolkitApi.token = await ToolkitApi.login(formData.username, formData.password);
-        setUser(await ToolkitApi.getUser(formData.username))
+        let token = await ToolkitApi.signup(formData);
+        await setUser({
+            username:formData.username,
+            token: token
+        });
+        ToolkitApi.token = token;
         setError();
+        setFormData({});
       }
       catch(err){
         console.log(err);
@@ -45,7 +49,7 @@ function SignupForm({setToken,setError, setUsername, setUser, formVisible}){
     }
 
     return(
-        <form onSubmit={onSubmit} style={formVisible}>
+        <form onSubmit={onSubmit}>
             <label htmlFor="first_name">First name</label>
             <input required type="text" name="first_name" onChange={handleChange}></input><br/>
             <label htmlFor="last_name">Last name</label>
