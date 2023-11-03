@@ -86,3 +86,4 @@ class ToolkitApi {
 // yqZc1Yf5ssX3cCYpimXaNEPRjmdqs44VJKk5XishFXI`;
 
 export default ToolkitApi;
+module.exports = ToolkitApi;
