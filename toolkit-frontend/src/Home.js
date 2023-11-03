@@ -3,6 +3,7 @@ import React, {useEffect, useState} from "react";
 import { Card, CardBody, CardTitle } from "reactstrap";
 
 function Home({token}) {
+  console.log(token);
   let welcomeMessage = "You now have access to all pages";
   console.log(token);
   if(token === "undefined" || token===undefined) 

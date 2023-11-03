@@ -13,7 +13,7 @@ import ToolkitApi from "./api";
  * App --> LoginForm
  */
 
-function LoginForm({setToken, setUser, setError, setUsername, formVisible}){
+function LoginForm({setUser, setError, formVisible, browserHistory}){
     const [formData, setFormData] = useState({});
     //keeps input val props up to date
     const handleChange = evt => {
@@ -25,22 +25,22 @@ function LoginForm({setToken, setUser, setError, setUsername, formVisible}){
     };
 
     //handles the login form submission
-
     async function onSubmit(evt){
         evt.preventDefault();
         try{
-            setToken();
-            await setUsername(formData.username);
-            await setToken(await ToolkitApi.login(formData.username, formData.password));
-            ToolkitApi.token = await ToolkitApi.login(formData.username, formData.password);
-            setUser(await ToolkitApi.getUser(formData.username))
+            let token = await ToolkitApi.login(formData.username, formData.password);
+            await setUser({
+                username:formData.username,
+                token: token
+            });
+            ToolkitApi.token = token;
             setError();
             setFormData({});
+            browserHistory.push(`/`);
         }
         catch(err){
             console.log(err);
-            setUser();
-            setUsername();
+            setUser({});
             setError("Invalid username or password")
         }
     }
