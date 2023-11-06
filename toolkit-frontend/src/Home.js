@@ -1,13 +1,41 @@
 //modified Home.js provided in the Snack or Booze project
 import React, {useEffect, useState} from "react";
-import { Card, CardBody, CardTitle } from "reactstrap";
+import { Link } from "react-router-dom/cjs/react-router-dom.min";
+import { Card, CardBody, CardTitle, ListGroup, ListGroupItem } from "reactstrap";
 
 function Home({token}) {
   console.log(token);
-  let welcomeMessage = "You now have access to all pages";
+  let welcomeMessage = "Access Pages";
+  let linkList = (
+    <ListGroup>
+      <Link to="/list/encounter">
+        <ListGroupItem>
+          Encounters
+        </ListGroupItem>
+      </Link>
+      <Link to="/list/creatures">
+        <ListGroupItem>
+          Creatures
+        </ListGroupItem>
+      </Link>
+      <Link to="/list/rets">
+        <ListGroupItem>
+          Random Encounter Tables
+        </ListGroupItem>
+      </Link>
+      <Link to="/quickInitiative">
+        <ListGroupItem>
+          Quick Initiative
+        </ListGroupItem>
+      </Link>
+    </ListGroup>
+  );
+
   console.log(token);
-  if(token === "undefined" || token===undefined) 
+  if(token === "undefined" || token===undefined) {
     welcomeMessage= "Welcome DM's Toolkit";
+    linkList = "";
+  }
   return (
     <section className="col-md-8">
       <Card>
@@ -17,6 +45,7 @@ function Home({token}) {
               {welcomeMessage}
             </h3>
           </CardTitle>
+          {linkList}
         </CardBody>
       </Card>
     </section>

@@ -12,19 +12,17 @@ import {
 import ToolkitApi from "./api";
 import "./List.css";
 
-/**List - shows list of creatures, RETs, or encounters with filter capabilities */
+/**QuickInitiative - shows list of creatures, RETs, or encounters with filter capabilities */
 
-function List({user}) {
+function QuickInitiative({user}) {
   const [list, setList] = useState(["no"]);
-  const {type} = useParams();
-  console.log(type);
   //useEffect(()=>{
   //   async function getList(){
   //     await setList(await ToolkitApi.getList(base));
   //   }
   //   getList();
   // }, [base]);
-  return (<h1>This is the placeholder page for {type}</h1>);
+  return (<h1>This is the placeholder page for qiuckInitative</h1>);
 
   // async function onSubmit(e){
   //   e.preventDefault();
@@ -74,4 +72,4 @@ function List({user}) {
   // );
 }
 
-export default List;
+export default QuickInitiative;

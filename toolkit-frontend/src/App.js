@@ -10,6 +10,7 @@ import SignupForm from "./SignupForm.js";
 import ToolkitApi from "./api";
 import useLocalStorage from "./useLocalStorage";
 import { Redirect } from "react-router-dom/cjs/react-router-dom.min";
+import QuickInitiative from "./QuickInitiative.js";
 
 function App() {
   const [user, setUser] = useState({});
@@ -37,8 +38,14 @@ function App() {
                     setUser={setUser}
                     user = {user}/>
             </Route>
+            <Route path="/list/:type">
+              <List user={user}/>
+            </Route>
+            <Route path="/quickInitiative">
+              <QuickInitiative/>
+            </Route>
             <Route>
-              <p>Hmmm. I can't seem to find what you want.</p>
+              <p>404 Page not found. (Insert joke about princesses, castles, and maguffins here)</p>
             </Route>
           </Switch>
         </main>
