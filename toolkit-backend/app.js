@@ -21,7 +21,7 @@ app.use(authenticateJWT);
 app.use("/initiatives", ensureLoggedIn, initiativeRoutes);
 app.use("/ies", ensureLoggedIn, initiativeEntityRoutes);
 app.use("/encounters", ensureLoggedIn, encounterRoutes);
-app.use("/ret", ensureLoggedIn, randomEncounterTableRoutes);
+app.use("/rets", ensureLoggedIn, randomEncounterTableRoutes);
 app.use("/auth", authRoutes);
 app.use("/users", usersRoutes);
 

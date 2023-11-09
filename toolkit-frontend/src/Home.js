@@ -8,7 +8,7 @@ function Home({token}) {
   let welcomeMessage = "Access Pages";
   let linkList = (
     <ListGroup>
-      <Link to="/list/encounter">
+      <Link to="/list/encounters">
         <ListGroupItem>
           Encounters
         </ListGroupItem>

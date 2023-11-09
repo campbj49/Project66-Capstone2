@@ -42,8 +42,9 @@ class ToolkitApi {
   
   /**TODO: Get list of user's <item> */
   static async getList(type){
-    let res = await this.request("encounters");
-    return res.encounters;
+    let res = await this.request(itemConverter[type].url);
+    console.log(res);
+    return res[itemConverter[type].response];
   }
 
   /**TODO: Get public list of <item> */
@@ -89,10 +90,21 @@ class ToolkitApi {
   }
 }
 
-// for now, put token ("testuser" / "password" on class)
-// ToolkitApi.token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
-// eyJ1c2VybmFtZSI6InRlc3R1c2VyIiwiaXNBZG1pbiI6ZmFsc2UsImlhdCI6MTY5ODQxOTU4Nn0
-// yqZc1Yf5ssX3cCYpimXaNEPRjmdqs44VJKk5XishFXI`;
+//converter for translating frontend urls to backend urls
+const itemConverter = {
+  encounters:{
+    url:"encounters",
+    response:"encounters"
+  },
+  creatures:{
+    url:"ies",
+    response:"initiativeEntities"
+  },
+  rets:{
+    url:"rets",
+    response:"randomEncounterTables"
+  }
+}
 
 module.exports = ToolkitApi;
 
