@@ -1,4 +1,5 @@
-import axios from "axios";
+//import axios from "axios";
+const axios = require("axios");
 
 const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:3001";
 
@@ -39,11 +40,17 @@ class ToolkitApi {
 
   // Individual API routes
   
-  /**TODO: Get list of user's initiative entities */
+  /**TODO: Get list of user's <item> */
+  static async getList(type){
+    let res = await this.request("encounters");
+    return res.encounters;
+  }
 
-  /**TODO: Get list of user's encounters */
+  /**TODO: Get public list of <item> */
 
-  /**TODO: Get list of user's random encounter tables */
+  /**TODO: Send create <item> command*/
+
+  /**TODO: Send edit <item> command*/
 
   /**TODO: Get user's quick initiative */
 
@@ -51,6 +58,7 @@ class ToolkitApi {
 
   static async login(username, password){
     let res = await this.request("auth/token",{username:username, password:password}, "post" );
+    this.token = res.token;
     return res.token;
   }
 
@@ -63,6 +71,7 @@ class ToolkitApi {
                                     lastName: formData.last_name,
                                     email: formData.email
                                   },"post");  
+    this.token = res.token;
     return res.token;
   }
 
@@ -85,5 +94,7 @@ class ToolkitApi {
 // eyJ1c2VybmFtZSI6InRlc3R1c2VyIiwiaXNBZG1pbiI6ZmFsc2UsImlhdCI6MTY5ODQxOTU4Nn0
 // yqZc1Yf5ssX3cCYpimXaNEPRjmdqs44VJKk5XishFXI`;
 
-export default ToolkitApi;
-//module.exports = ToolkitApi;
+module.exports = ToolkitApi;
+
+//have to comment this out to keep jest from throwing a fit
+//export default ToolkitApi;
