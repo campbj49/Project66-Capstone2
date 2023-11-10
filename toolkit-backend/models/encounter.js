@@ -1,6 +1,7 @@
 const { user } = require("pg/lib/defaults");
 const db = require("../db");
 const { sqlForPartialUpdate, sqlResToJs, sqlArrToJs } = require("../helpers/sql");
+const { BadRequestError } = require("../expressError");
 
 
 /** Collection of related methods for player characters */
@@ -84,7 +85,6 @@ class Encounter {
         let idIndex = values.length + 1;
         let usernameIndex = idIndex + 1;
 
-        console.log(values);
         //start by creating the base encounter record
         const entityResult = await db.query(
               `UPDATE encounters
@@ -93,6 +93,7 @@ class Encounter {
                 RETURNING *`,
             [...values, id, ownerUsername],
         );
+        if(!entityResult.rows[0]) throw new BadRequestError("Invalid user/encounter id combo")
 
         return sqlResToJs(entityResult.rows[0]);
     }

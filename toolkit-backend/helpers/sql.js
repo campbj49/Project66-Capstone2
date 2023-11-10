@@ -93,7 +93,8 @@ const defaultJsToSql = {
   isActive:"is_active",
   turnOrder:"turn_order",
   hpMax:"hp_max",
-  nextEntity:"next_entity"
+  nextEntity:"next_entity",
+  diceModifier:"dice_modifier"
   //to be extended as more details are added to the stat block
 }
 

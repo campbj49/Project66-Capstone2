@@ -41,17 +41,31 @@ class ToolkitApi {
   // Individual API routes
   
   /**TODO: Get list of user's <item> */
-  static async getList(type){
+  static async getItemList(type){
     let res = await this.request(itemConverter[type].url);
-    console.log(res);
     return res[itemConverter[type].response];
   }
 
   /**TODO: Get public list of <item> */
 
   /**TODO: Send create <item> command*/
+  static async createItem(type, data){
+    let res = await this.request(itemConverter[type].url, data, "post");
+    return res.encounter;
+  }
 
   /**TODO: Send edit <item> command*/
+  static async editItem(type, id, data){
+    let res = await this.request(`${itemConverter[type].url}/${id}`, data, "put");
+    console.log(res);
+    return res.encounter;
+  }
+
+  /**TODO: Send delete <item> command */
+  static async deleteItem(type, id){
+    let res = await this.request(`${itemConverter[type].url}/${id}`,{},"delete");
+    return res.message;
+  }
 
   /**TODO: Get user's quick initiative */
 

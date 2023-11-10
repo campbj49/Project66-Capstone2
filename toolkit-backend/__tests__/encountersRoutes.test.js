@@ -132,7 +132,7 @@ describe("encounter Routes Test", function () {
       expect(newencounter).toEqual({
         id: expect.any(Number),
         description: 'Orcs in a desert',
-          ownerUsername:"testuser",
+        ownerUsername:"testuser",
         statBlockId:1,
         diceCount:1,
         diceSize:12
@@ -153,7 +153,24 @@ describe("encounter Routes Test", function () {
           "instance.description is not of a type(s) string",
         ],
         "status": 400
+      });
     });
+
+    test("will throw an error if the id doesn't exist for that user", async function () {
+      let response = await request(app)
+        .put(`/encounters/${id+1}`)
+        .set({'Authorization':token})
+        .send({
+          "description":100
+        });
+
+      let error = response.body.error;
+      expect(error).toEqual({
+        "message": [
+          "Invalid user/encounter id combo",
+        ],
+        "status": 400
+      });
     });
   });
 
@@ -166,6 +183,13 @@ describe("encounter Routes Test", function () {
         .set({'Authorization':token});
       let message = response.body.message;
       expect(message).toEqual("encounter deleted");
+    });
+    test("will throw an error if the target doesn't exist", async function(){
+      let response = await request(app)
+        .delete(`/encounters/${id+1}`)
+        .set({'Authorization':token});
+      let message = response.body.message;
+      expect(message).toEqual("encounter does not exist");
     });
   });
 });
