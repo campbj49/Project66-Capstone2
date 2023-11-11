@@ -103,6 +103,8 @@ class Encounter {
             `DELETE FROM encounters WHERE id = $1 AND owner_username = $2`,
             [id, username]
         );
+        //ensure the record being deleted actually exists
+        if(!deleteResult.rowCount) throw new BadRequestError("encounter does not exist");
     }
 }
 
