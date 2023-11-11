@@ -3,33 +3,61 @@ const request = require("supertest");
 const app = require("../app");
 const db = require("../db");
 const RandomEncounterTable = require("../models/randomEncounterTable");
+const Encounter = require("../models/encounter");
+const InitiativeEntity = require("../models/initiativeEntity");
 process.env.NODE_ENV = "test";
 let token;
 let id;
-const exampleEncounter ={
-  "data":{
-    "description":"The high seas",
-    "diceCount":2,
-    "diceSize":12,
-    "trigger":19
-  },
-  "encounters":[
-    {
-      "encounterId":2,
-      "rangeStart":6,
-      "rangeEnd":24
-    },
-    {
-      "encounterId":1,
-      "rangeStart":2,
-      "rangeEnd":5
-    }
-  ]
-};
+let exampleEncounter;
 
 //modified Auth Test Routes from last project to support randomEncounterTable tests
 describe("RandomEncounterTable Routes Test", function () {
+  //create a new encounters to be used in the whole set of the tests
+  beforeAll(async ()=>{
+    let exMonster = await InitiativeEntity.create({
+      "name":"testMonster",
+      "description":"Furry undomesticated dog",
+      "type": "Monster",
+      "hpMax":8
+    }, "testuser");
 
+    let exEncounter1 = await Encounter.create({
+      "description":"Example encounter 1",
+      "statBlockId":exMonster.id,
+      "diceCount":1,
+      "diceSize":12,
+    }, "testuser");
+    
+    let exEncounter2 = await Encounter.create({
+      "description":"Example encounter 2",
+      "statBlockId":exMonster.id,
+      "diceCount":1,
+      "diceSize":12,
+    }, "testuser");
+    
+    exampleEncounter ={
+      "data":{
+        "description":"The high seas",
+        "diceCount":2,
+        "diceSize":12,
+        "trigger":19
+      },
+      "encounters":[
+        {
+          "encounterId":exEncounter1.id,
+          "rangeStart":6,
+          "rangeEnd":24
+        },
+        {
+          "encounterId":exEncounter2.id,
+          "rangeStart":2,
+          "rangeEnd":5
+        }
+      ]
+    }
+  });
+
+  //create a fresh table before each test
   beforeEach(async function () {
     await db.query("DELETE FROM random_encounter_tables");
     token = await request(app).post("/auth/token")
@@ -52,9 +80,9 @@ describe("RandomEncounterTable Routes Test", function () {
   describe("GET /randomEncounterTables", function(){
     test("can get randomEncounterTable list", async function(){
       let response = await request(app)
-        .get("/ret")
+        .get("/rets")
         .set({'Authorization':token});
-      let randomEncounterTableList = response.body.randomEncounterTables;
+      let randomEncounterTableList = response.body.randomEncounterTableList;
       expect(randomEncounterTableList.length).toEqual(1);
       expect(randomEncounterTableList[0].description).toEqual("The high seas");
     });
@@ -65,7 +93,7 @@ describe("RandomEncounterTable Routes Test", function () {
   describe("GET /randomEncounterTables/:id", function(){
     test("can get randomEncounterTable details", async function(){
       let response = await request(app)
-      .get(`/ret/${id}`)
+      .get(`/rets/${id}`)
       .set({'Authorization':token});
       let randomEncounterTable = response.body.randomEncounterTable;
       expect(randomEncounterTable.description).toEqual("The high seas");
@@ -80,7 +108,7 @@ describe("RandomEncounterTable Routes Test", function () {
 
       falseToken = falseToken.body.token;
       let response = await request(app)
-      .get(`/ret/${id}`)
+      .get(`/rets/${id}`)
       .set({'Authorization':falseToken});
       let randomEncounterTable = response.body.randomEncounterTable;
       expect(randomEncounterTable).toEqual({});
@@ -92,12 +120,13 @@ describe("RandomEncounterTable Routes Test", function () {
   describe("POST /randomEncounterTables", function () {
     test("can add a new randomEncounterTable", async function () {
       let response = await request(app)
-        .post("/ret")
+        .post("/rets")
         .set({'Authorization':token})
         .send(exampleEncounter);
       let newRandomEncounterTable = response.body.randomEncounterTable;
       expect(newRandomEncounterTable).toEqual({
           id: expect.any(Number),
+          isPublic: false,
           description: 'The high seas',
           diceCount:2,
           diceSize:12,
@@ -106,13 +135,13 @@ describe("RandomEncounterTable Routes Test", function () {
           rangeMax: "24",
           encounters:[
             {
-                encounterId:1,
+                encounterId:exampleEncounter.encounters[0].encounterId,
                 rangeStart:2,
                 rangeEnd:5,
                 tableId: expect.any(Number)
             },
             {
-                encounterId:2,
+                encounterId:exampleEncounter.encounters[1].encounterId,
                 rangeStart:6,
                 rangeEnd:24,
                 tableId: expect.any(Number)
@@ -124,7 +153,7 @@ describe("RandomEncounterTable Routes Test", function () {
 
     test("will not allow invalid dice ranges through", async function(){
       let response = await request(app)
-        .post("/ret")
+        .post("/rets")
         .set({'Authorization':token})
         .send({
           "data":{
@@ -135,12 +164,12 @@ describe("RandomEncounterTable Routes Test", function () {
           },
           "encounters":[
             {
-              "encounterId":2,
+              "encounterId":exampleEncounter.encounters[1].encounterId,
               "rangeStart":6,
               "rangeEnd":23
             },
             {
-              "encounterId":1,
+              "encounterId":exampleEncounter.encounters[0].encounterId,
               "rangeStart":2,
               "rangeEnd":5
             }
@@ -156,7 +185,7 @@ describe("RandomEncounterTable Routes Test", function () {
 
     test("will throw descriptive errors", async function () {
       let response = await request(app)
-        .post("/ret")
+        .post("/rets")
         .set({'Authorization':token})
         .send({
             "description":"The high seas",
@@ -167,7 +196,7 @@ describe("RandomEncounterTable Routes Test", function () {
                 "rangeEnd":3
               },
               {
-                "encounterId":2,
+                "encounterId":exampleEncounter.encounters[1].encounterId,
                 "rangeStart":4,
                 "rangeEnd":5
               }
@@ -190,7 +219,7 @@ describe("RandomEncounterTable Routes Test", function () {
   describe("PUT /randomEncounterTables/:id", function () {
     test("can update an existing randomEncounterTable", async function () {
       let response = await request(app)
-        .put(`/ret/${id}`)
+        .put(`/rets/${id}`)
         .set({'Authorization':token})
         .send({
           "data":{
@@ -199,21 +228,21 @@ describe("RandomEncounterTable Routes Test", function () {
           },
           "encounters":[
             {
-              "encounterId":1,
+              "encounterId":exampleEncounter.encounters[0].encounterId,
               "rangeStart":2,
               "rangeEnd":3
             },
             {
-              "encounterId":2,
+              "encounterId":exampleEncounter.encounters[1].encounterId,
               "rangeStart":4,
               "rangeEnd":12
             }
           ]
       });
       let newRandomEncounterTable = response.body.randomEncounterTable;
-      console.log(response.body);
       expect(newRandomEncounterTable).toEqual({
         id: expect.any(Number),
+        isPublic: false,
         description: 'The low desert',
         diceCount:2,
         diceSize:6,
@@ -222,13 +251,13 @@ describe("RandomEncounterTable Routes Test", function () {
         rangeMax: "12",
         encounters:[
           {
-              encounterId:1,
+              encounterId:exampleEncounter.encounters[0].encounterId,
               rangeStart:2,
               rangeEnd:3,
               tableId: expect.any(Number)
           },
           {
-              encounterId:2,
+              encounterId:exampleEncounter.encounters[1].encounterId,
               rangeStart:4,
               rangeEnd:12,
               tableId: expect.any(Number)
@@ -239,7 +268,7 @@ describe("RandomEncounterTable Routes Test", function () {
 
     test("will not allow invalid dice ranges through", async function(){
         let response = await request(app)
-          .put(`/ret/${id}`)
+          .put(`/rets/${id}`)
           .set({'Authorization':token})
           .send({
             "data":{
@@ -250,12 +279,12 @@ describe("RandomEncounterTable Routes Test", function () {
             },
             "encounters":[
               {
-                "encounterId":2,
+                "encounterId":exampleEncounter.encounters[1].encounterId,
                 "rangeStart":6,
                 "rangeEnd":23
               },
               {
-                "encounterId":1,
+                "encounterId":exampleEncounter.encounters[0].encounterId,
                 "rangeStart":2,
                 "rangeEnd":5
               }
@@ -271,7 +300,7 @@ describe("RandomEncounterTable Routes Test", function () {
 
     test("will throw descriptive errors", async function () {
       let response = await request(app)
-        .put(`/ret/${id}`)
+        .put(`/rets/${id}`)
         .set({'Authorization':token})
         .send({
           "data":{
@@ -296,7 +325,7 @@ describe("RandomEncounterTable Routes Test", function () {
   describe("DELETE /randomEncounterTables/:id", function(){
     test("can delete randomEncounterTable", async function(){
       let response = await request(app)
-        .delete(`/ret/${id}`)
+        .delete(`/rets/${id}`)
         .set({'Authorization':token});
       let message = response.body.message;
       expect(message).toEqual("RandomEncounterTable deleted");
