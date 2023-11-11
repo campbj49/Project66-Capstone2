@@ -38,7 +38,7 @@ describe("InitiativeEntity Routes Test", function () {
       let response = await request(app)
         .get("/ies")
         .set({'Authorization':token});
-      let initiativeEntityList = response.body.initiativeEntities;
+      let initiativeEntityList = response.body.initiativeEntityList;
       expect(initiativeEntityList.length).toEqual(1);
       expect(initiativeEntityList[0].name).toEqual("Xander");
     });
@@ -96,7 +96,8 @@ describe("InitiativeEntity Routes Test", function () {
           ownerUsername: 'testuser',
           playerName: 'ジョン',
           ac: 25,
-          passiveWis: 9
+          passiveWis: 9,
+          isPublic:false
         }
       );
     });
@@ -141,7 +142,8 @@ describe("InitiativeEntity Routes Test", function () {
         ownerUsername: 'testuser',
         playerName: 'ジョン',
         ac: 25,
-        passiveWis: 9
+        passiveWis: 9,
+        isPublic:false
       });
     });
 

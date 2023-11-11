@@ -77,7 +77,6 @@ router.put("/:id", async function (req, res, next) {
   
     // at this point in code, we know we have a valid payload
     const encounter = await Encounter.update(req.params.id, req.body,res.locals.user.username);
-    console.log(encounter);
     return res.json({ encounter });
   } catch (err) {
     return next(err);
