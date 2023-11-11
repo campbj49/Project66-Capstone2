@@ -9,14 +9,14 @@ const {ExpressError} = require("../expressError");
 const router = new express.Router();
 
 
-/** GET / => {randomEncounterTables: [randomEncounterTable, ...]} 
+/** GET / => {randomEncounterTableList: [randomEncounterTable, ...]} 
  * returns the list of IEs associated with a user
  */
 
 router.get("/", async function (req, res, next) {
   try {
-    const randomEncounterTables = await RandomEncounterTable.findAll(res.locals.user.username);
-    return res.json({ randomEncounterTables });
+    const randomEncounterTableList = await RandomEncounterTable.findAll(res.locals.user.username);
+    return res.json({ randomEncounterTableList });
   } catch (err) {
     return next(err);
   }

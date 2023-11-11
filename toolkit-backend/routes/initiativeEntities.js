@@ -15,8 +15,8 @@ const router = new express.Router();
 
 router.get("/", async function (req, res, next) {
   try {
-    const initiativeEntities = await InitiativeEntity.findAll(res.locals.user.username);
-    return res.json({ initiativeEntities });
+    const initiativeEntityList = await InitiativeEntity.findAll(res.locals.user.username);
+    return res.json({ initiativeEntityList });
   } catch (err) {
     return next(err);
   }

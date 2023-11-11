@@ -9,13 +9,13 @@ const {ExpressError} = require("../expressError");
 const router = new express.Router();
 
 
-/** GET / => {initiatives: [initiative, ...]} 
- * returns the list of initiatives associated with a user
+/** GET / => {initiativeList: [initiative, ...]} 
+ * returns the list of initiativeList associated with a user
  */
 router.get("/", async function (req, res, next) {
   try {
-    const initiatives = await Initiative.findAll(res.locals.user.username);
-    return res.json({ initiatives });
+    const initiativeList = await Initiative.findAll(res.locals.user.username);
+    return res.json({ initiativeList });
   } catch (err) {
     return next(err);
   }

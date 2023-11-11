@@ -43,7 +43,7 @@ class ToolkitApi {
   /**TODO: Get list of user's <item> */
   static async getItemList(type){
     let res = await this.request(itemConverter[type].url);
-    return res[itemConverter[type].response];
+    return res[itemConverter[type].response+"List"];
   }
 
   /**TODO: Get public list of <item> */
@@ -51,14 +51,14 @@ class ToolkitApi {
   /**TODO: Send create <item> command*/
   static async createItem(type, data){
     let res = await this.request(itemConverter[type].url, data, "post");
-    return res.encounter;
+    return res[itemConverter[type].response];
   }
 
   /**TODO: Send edit <item> command*/
   static async editItem(type, id, data){
     let res = await this.request(`${itemConverter[type].url}/${id}`, data, "put");
     console.log(res);
-    return res.encounter;
+    return res[itemConverter[type].response];
   }
 
   /**TODO: Send delete <item> command */
@@ -108,15 +108,15 @@ class ToolkitApi {
 const itemConverter = {
   encounters:{
     url:"encounters",
-    response:"encounters"
+    response:"encounter"
   },
   creatures:{
     url:"ies",
-    response:"initiativeEntities"
+    response:"initiativeEntity"
   },
   rets:{
     url:"rets",
-    response:"randomEncounterTables"
+    response:"randomEncounterTable"
   }
 }
 

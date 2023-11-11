@@ -9,14 +9,14 @@ const {ExpressError} = require("../expressError");
 const router = new express.Router();
 
 
-/** GET / => {encounters: [encounter, ...]} 
- * returns the list of encounters associated with a user
+/** GET / => {encounterList: [encounter, ...]} 
+ * returns the list of encounterList associated with a user
  */
 
 router.get("/", async function (req, res, next) {
   try {
-    const encounters = await Encounter.findAll(res.locals.user.username);
-    return res.json({ encounters });
+    const encounterList = await Encounter.findAll(res.locals.user.username);
+    return res.json({ encounterList });
   } catch (err) {
     return next(err);
   }
