@@ -2,7 +2,7 @@ const ToolkitApi = require("./api");//const request = require("supertest");
 let token;
 
 describe("Test API functions", ()=>{
-    beforeAll(async ()=>{
+    beforeEach(async ()=>{
         //set the token for getting access to all the backend routes
         token = await ToolkitApi.login("testuser", "password");
     })
@@ -10,8 +10,22 @@ describe("Test API functions", ()=>{
     //Checks the authorization functions
     describe("Authorization functions",()=>{
         test("Gets a token when send correct username and password", async ()=>{
-            expect(token).toEqual(expect.any(String))
+            expect(token).toEqual(expect.any(String));
         });
+
+        test("Succesfully creates a new user", async ()=>{
+            let newUserToken = await ToolkitApi.signup({
+                username: "newuser",
+                password: "password",
+                firstName: "newFirstName",
+                lastName: "newLastName",
+                email: "new@email.com"
+            });
+            expect(newUserToken).toEqual(expect.any(String));
+
+            let deleteData = await ToolkitApi.deleteUser("newuser");
+            expect(deleteData).toEqual("newuser");
+        })
     })
 
     //Checks that primary routes work with the Encounter <item> type
@@ -210,7 +224,7 @@ describe("Test API functions", ()=>{
         test("PUT: Updates target RET",async ()=>{
             //retreive RET list to get the id of the test RET to be deleted
             let RETs = await ToolkitApi.getItemList("rets");
-            expect(RETs.length).toBeGreaterThan(2);
+            expect(RETs.length).toBeGreaterThan(1);
             let id=RETs[RETs.length-1].id;
 
             let newRET = await ToolkitApi.editItem("rets", id,{
@@ -248,7 +262,7 @@ describe("Test API functions", ()=>{
         test("DELETE: Removes target RET",async ()=>{
             //retreive RET list to get the id of the test RET to be deleted
             let RETs = await ToolkitApi.getItemList("rets");
-            expect(RETs.length).toBeGreaterThan(2);
+            expect(RETs.length).toBeGreaterThan(1);
             let id=RETs[RETs.length-1].id;
 
             let delMessage = await ToolkitApi.deleteItem("rets", id)

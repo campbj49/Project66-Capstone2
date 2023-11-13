@@ -57,7 +57,6 @@ class ToolkitApi {
   /**TODO: Send edit <item> command*/
   static async editItem(type, id, data){
     let res = await this.request(`${itemConverter[type].url}/${id}`, data, "put");
-    console.log(res);
     return res[itemConverter[type].response];
   }
 
@@ -82,8 +81,8 @@ class ToolkitApi {
                                   {
                                     username: formData.username,
                                     password: formData.password,
-                                    firstName: formData.first_name,
-                                    lastName: formData.last_name,
+                                    firstName: formData.firstName,
+                                    lastName: formData.lastName,
                                     email: formData.email
                                   },"post");  
     this.token = res.token;
@@ -97,10 +96,15 @@ class ToolkitApi {
   }
 
   //updates user data
-
   static async updateUser(username, data){
     let res = await this.request(`users/${username}`, data, "patch");
     return res.user;
+  }
+
+  //deletes a user from the backend
+  static async deleteUser(username){
+    let res = await this.request(`users/${username}`, {}, "delete");
+    return res.deleted;
   }
 }
 
