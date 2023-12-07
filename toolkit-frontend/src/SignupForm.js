@@ -43,9 +43,6 @@ function SignupForm({setUser, setError, user}){
         console.log(err);
         setError("Invalid username or password")
       }
-      
-      setFormData({});
-      //browserHistory.push(`/`);
     }
 
     return(

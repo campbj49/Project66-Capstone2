@@ -11,6 +11,7 @@ import ToolkitApi from "./api";
 import useLocalStorage from "./useLocalStorage";
 import { Redirect } from "react-router-dom/cjs/react-router-dom.min";
 import QuickInitiative from "./QuickInitiative.js";
+import CreationForm from "./CreationForm.js";
 
 function App() {
   const [user, setUser] = useState({});
@@ -40,6 +41,9 @@ function App() {
             </Route>
             <Route path="/list/:type">
               <List user={user}/>
+            </Route>
+            <Route path="/creation/:type">
+              <CreationForm user={user}/>
             </Route>
             <Route path="/quickInitiative">
               <QuickInitiative/>

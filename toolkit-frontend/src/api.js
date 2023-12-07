@@ -1,5 +1,5 @@
-//import axios from "axios";
-const axios = require("axios");
+import axios from "axios";
+//const axios = require("axios");
 
 const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:3001";
 
@@ -124,7 +124,7 @@ const itemConverter = {
   }
 }
 
-module.exports = ToolkitApi;
+//module.exports = ToolkitApi;
 
 //have to comment this out to keep jest from throwing a fit
-//export default ToolkitApi;
+export default ToolkitApi;

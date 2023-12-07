@@ -24,7 +24,12 @@ function List({user}) {
   //   }
   //   getList();
   // }, [base]);
-  return (<h1>This is the placeholder page for {type}</h1>);
+  return (
+    <section>
+      <h1>This is the placeholder page for {type}</h1>
+      <Link to={`/creation/${type}`}>Create new {type}</Link>
+    </section>
+  );
 
   // async function onSubmit(e){
   //   e.preventDefault();
